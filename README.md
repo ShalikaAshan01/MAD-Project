@@ -1,3 +1,1 @@
-# MAD
-# MAD
-# MAD
+# Mobile Application Development Project
