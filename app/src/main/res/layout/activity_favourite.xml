@@ -9,57 +9,57 @@
     <!--<include layout="@layout/toolbar_main"></include>-->
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/tvQ6"
         android:layout_width="@dimen/Text_view_Layout_width"
         android:layout_height="@dimen/Text_view_Layout_height"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/fav_view4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+        app:layout_constraintTop_toBottomOf="@+id/tvQ5" />
 
     <TextView
-        android:id="@+id/textView18"
+        android:id="@+id/tvQ5"
         android:layout_width="@dimen/Text_view_Layout_width"
         android:layout_height="@dimen/Text_view_Layout_height"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/fav_view5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+        app:layout_constraintTop_toBottomOf="@+id/tvQ4" />
 
     <TextView
-        android:id="@+id/textView17"
+        android:id="@+id/tvQ4"
         android:layout_width="@dimen/Text_view_Layout_width"
         android:layout_height="@dimen/Text_view_Layout_height"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/fav_view3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView16" />
+        app:layout_constraintTop_toBottomOf="@+id/tvQ3" />
 
     <TextView
-        android:id="@+id/textView16"
+        android:id="@+id/tvQ3"
         android:layout_width="@dimen/Text_view_Layout_width"
         android:layout_height="@dimen/Text_view_Layout_height"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/fav_view2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+        app:layout_constraintTop_toBottomOf="@+id/tvQ2" />
 
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/tvQ2"
         android:layout_width="@dimen/Text_view_Layout_width"
         android:layout_height="@dimen/Text_view_Layout_height"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/fav_view1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        app:layout_constraintTop_toBottomOf="@+id/tvQ1" />
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/tvQ1"
         android:layout_width="@dimen/Text_view_Layout_width"
         android:layout_height="@dimen/Text_view_Layout_height"
         android:text="@string/news_feed"
@@ -76,7 +76,7 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_action_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView14"
+        app:layout_constraintStart_toEndOf="@+id/tvQ6"
         app:layout_constraintTop_toBottomOf="@+id/imageButton7" />
 
     <ImageButton
@@ -89,7 +89,7 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_action_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView18"
+        app:layout_constraintStart_toEndOf="@+id/tvQ5"
         app:layout_constraintTop_toBottomOf="@+id/imageButton6" />
 
     <ImageButton
@@ -102,7 +102,7 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_action_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView17"
+        app:layout_constraintStart_toEndOf="@+id/tvQ4"
         app:layout_constraintTop_toBottomOf="@+id/imageButton5" />
 
     <ImageButton
@@ -115,7 +115,7 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_action_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/tvQ3"
         app:layout_constraintTop_toBottomOf="@+id/imageButton4" />
 
     <ImageButton
@@ -128,7 +128,7 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_action_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView15"
+        app:layout_constraintStart_toEndOf="@+id/tvQ2"
         app:layout_constraintTop_toBottomOf="@+id/imageButton3" />
 
     <ImageButton
@@ -141,7 +141,24 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_action_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView19"
+        app:layout_constraintStart_toEndOf="@+id/tvQ1"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="36dp"
+        android:layout_marginLeft="306dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginStart="306dp"
+        android:layout_marginTop="128dp"
+        android:clickable="true"
+        android:src="@drawable/ic_action_plus"
+        app:backgroundTint="@android:color/background_light"
+        app:fabSize="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_home1">
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="196dp"
+        android:layout_height="188dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/img_user"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_answer"
+        android:layout_width="106dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginLeft="75dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginStart="75dp"
+        android:layout_marginTop="32dp"
+        android:drawableLeft="@drawable/img_answer"
+        android:text="@string/no_answer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_questions"
+        android:layout_width="115dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginLeft="75dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginStart="75dp"
+        android:layout_marginTop="37dp"
+        android:drawableLeft="@drawable/img_qna"
+        android:text="@string/no_question"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_answer" />
+
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="127dp"
+        android:layout_marginLeft="126dp"
+        android:layout_marginRight="127dp"
+        android:layout_marginStart="126dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/profile_name"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_logout" />
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="29dp"
+        android:background="@android:color/holo_orange_light"
+        android:text="@string/btn_logout"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_questions" />
+
+    <TextView
+        android:id="@+id/tv_email"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_marginEnd="166dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="166dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="39dp"
+        android:drawableLeft="@drawable/img_email"
+        android:text="@string/user_email"
+        android:textSize="@dimen/profile_txt_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_username" />
+
+    <TextView
+        android:id="@+id/tv_works"
+        android:layout_width="146dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="249dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="249dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:drawableLeft="@drawable/img_work"
+        android:text="@string/works_in"
+        android:textSize="@dimen/profile_txt_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_degree" />
+
+    <TextView
+        android:id="@+id/tv_lives"
+        android:layout_width="168dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="227dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="227dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:drawableLeft="@drawable/img_location"
+        android:text="@string/lives_in"
+        android:textSize="@dimen/profile_txt_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_works" />
+
+    <TextView
+        android:id="@+id/tv_degree"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:drawableLeft="@drawable/img_school"
+        android:text="@string/degree"
+        android:textSize="@dimen/profile_txt_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_email" />
+
+    <!--<Button-->
+        <!--android:id="@+id/btnChangePassword"-->
+        <!--android:layout_width="285dp"-->
+        <!--android:layout_height="63dp"-->
+        <!--android:layout_marginEnd="62dp"-->
+        <!--android:layout_marginLeft="64dp"-->
+        <!--android:layout_marginRight="62dp"-->
+        <!--android:layout_marginStart="64dp"-->
+        <!--android:layout_marginTop="23dp"-->
+        <!--android:background="@drawable/backgroung_change_password_button"-->
+        <!--android:text="@string/changepassword"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/tv_lives" />-->
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="392dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnChangePassword"
+        app:layout_constraintTop_toBottomOf="@+id/btn_logout"
+        app:srcCompat="@drawable/img_answer" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="79dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="73dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_degree"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_logout"
+        app:layout_constraintVertical_bias="0.0" />
+
+</android.support.constraint.ConstraintLayout>

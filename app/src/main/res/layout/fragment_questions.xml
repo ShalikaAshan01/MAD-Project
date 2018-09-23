@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_home1"
+    android:id="@+id/fragmentQuestion"
+
+    >
+
+    <EditText
+        android:id="@+id/editTextAskQuestion"
+        android:layout_width="0dp"
+        android:layout_height="84dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/edit_text_boarder"
+        android:ems="10"
+        android:hint="@string/whats_on_mind_question"
+        android:inputType="textPersonName"
+        android:lines="10"
+        android:minLines="8"
+        android:scrollbars="horizontal"
+        android:singleLine="false"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/tvQ2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/txt_height"
+        android:layout_marginEnd="21dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="29dp"
+        android:text="@string/news_feed"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvQ1" />
+
+    <TextView
+        android:id="@+id/tvQ3"
+        android:layout_width="372dp"
+        android:layout_height="63dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="29dp"
+        android:text="@string/news_feed2"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvQ2" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="80dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginLeft="257dp"
+        android:layout_marginRight="47dp"
+        android:layout_marginStart="257dp"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/holo_orange_light"
+        android:text="@string/post"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAskQuestion" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="85dp"
+        android:layout_height="74dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="26dp"
+        android:src="@drawable/img_user"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="135dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="94dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="94dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="50dp"
+        android:fontFamily="serif"
+        android:text="@string/profile_name"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvQ1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/txt_height"
+        android:layout_marginEnd="23dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="23dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="38dp"
+        android:text="@string/fav_view3"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
+
+</android.support.constraint.ConstraintLayout>
