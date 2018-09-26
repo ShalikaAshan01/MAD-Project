@@ -27,13 +27,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +49,9 @@ public class user_details_activity extends Fragment {
     private TextView tv_questions, tv_degree, tv_works, tv_lives, tv_username,tv_email;
     private static String degree, work, live, fname, lname;
     private static String tempwork, templive, tempname, temp[];
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
+    private static ProgressBar progressBar;
 
 
     @Nullable
@@ -69,67 +71,35 @@ public class user_details_activity extends Fragment {
         tv_email = rootView.findViewById(R.id.tv_email);
         tv_username = (TextView) rootView.findViewById(R.id.tv_username);
 
+        //set text view values from Shared preference
+//        final String userid = SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getId();
+//        final String username = SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getFirstname() + " " +
+//                SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getLastname();
+//        tv_username.setText(username);
+//        tv_email.setText(SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getEmail());
 
-        final int userid = SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getId();
-        String username = SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getFirstname() + " " +
-                SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getLastname();
-        tv_username.setText(username);
-        tv_email.setText(SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getEmail());
+        //set text view values from database
+        mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+        String uid = mAuth.getCurrentUser().getUid();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_GETUSERINFORMATIONS, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject object = new JSONObject(response);
-                    if (!object.getBoolean("error")) {
-                        JSONObject userJson = object.getJSONObject("user");
-                        User user = new User(
-                                userJson.getInt("id"),
-                                userJson.getString("username"),
-                                userJson.getString("email"),
-                                userJson.getString("gender"),
-                                userJson.getString("firstname"),
-                                userJson.getString("lastname")
-                        );
-                        tv_username.setText(user.getFirstname()+" "+ user.getLastname());
-                        tv_email.setText(user.getEmail());
-
-                    }else{
-                        Toast.makeText(getContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (JSONException e) {
-                    Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        )
-
-        {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
-                params.put("userid",String.valueOf(userid));
-                return params;
-            }
-        };
-        final ProgressBar progressBar  =rootView.findViewById(R.id.progressBar2);
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        requestQueue.add(stringRequest);
+        progressBar =rootView.findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.VISIBLE);
-        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<String>() {
+        databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onRequestFinished(Request<String> request) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String username = dataSnapshot.child("username").getValue().toString();
+                String firstname = dataSnapshot.child("firstname").getValue().toString();
+                String lastname = dataSnapshot.child("lastname").getValue().toString();
+                String email = mAuth.getCurrentUser().getEmail();
+                tv_email.setText(email);
+                tv_username.setText(firstname+" " + lastname);
+                progressBar.setVisibility(View.INVISIBLE);
+            }
 
-                if (progressBar !=  null && progressBar.isShown())
-                    progressBar.setVisibility(View.GONE);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
@@ -159,6 +129,7 @@ public class user_details_activity extends Fragment {
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         //getActivity().finish();
                                         SharedPrefManager.getInstance(getActivity().getApplicationContext()).logout();
+                                        mAuth.signOut();
                                         Intent intent = new Intent(getActivity().getApplicationContext(), login_activity.class);
                                         getActivity().finish();
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

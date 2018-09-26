@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "564135506077",
+    "firebase_url": "https://questionandanswer-2b50c.firebaseio.com",
+    "project_id": "questionandanswer-2b50c",
+    "storage_bucket": "questionandanswer-2b50c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564135506077:android:c8972bbcb512b467",
+        "android_client_info": {
+          "package_name": "com.sadeveloper.sample_qna"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "564135506077-ajt43hhalvds1jq5o5mhjpuv7gian7ql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sadeveloper.sample_qna",
+            "certificate_hash": "c69c6f7baf0dd23dba3df32a31ba59b4db6449d0"
+          }
+        },
+        {
+          "client_id": "564135506077-jn3jeaieae229nofi6cmfg324vtu9n69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZVkS0YM4YJNCqOE7euLymwfQCb4kwrO8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "564135506077-jn3jeaieae229nofi6cmfg324vtu9n69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,10 +1,10 @@
 package com.sadeveloper.sample_qna;
 
 class User {
-    private int id;
+    private String id;
     private String username, email, gender,firstname,lastname;
 
-    public User(int id, String username, String email, String gender, String firstname, String lastname) {
+    public User(String id, String username, String email, String gender, String firstname, String lastname) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -13,7 +13,7 @@ class User {
         this.lastname = lastname;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
 }
 
@@ -33,5 +33,17 @@ class User {
     }
     public String getLastname() {
         return lastname;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", gender='" + gender + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                '}';
     }
 }

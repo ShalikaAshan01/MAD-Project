@@ -18,7 +18,7 @@
     <!--<string name="ask_question_text">Add a Question?</string>-->
     <!--<string name="ask_both">Both</string>-->
     <string name="app_name">Brain Booster</string>
-    <string name="login_username">Username</string>
+    <string name="login_username">Email Address</string>
     <string name="login_password">Password</string>
     <string name="login_button">Login</string>
     <string name="login_text">Don\'t have an account?\n Register Here</string>

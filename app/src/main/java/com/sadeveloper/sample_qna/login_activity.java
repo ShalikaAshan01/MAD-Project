@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +18,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +39,9 @@ import java.util.Map;
 public class login_activity extends AppCompatActivity {
 
     EditText editTextUsername, editTextPassword;
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     //back button double pressed to exit
     boolean doubleBackToExitPressedOnce = false;
@@ -63,14 +70,24 @@ public class login_activity extends AppCompatActivity {
         setTheme(R.style.AppTheme);//set splash screen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-
+        mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
         //if the user is already logged in we will directly start the profile activity
-        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
-            finish();
-            startActivity(new Intent(this, UserAreaActivity.class));
-            return;
-        }
+//        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+//            finish();
+//            startActivity(new Intent(this, UserAreaActivity.class));
+//            return;
+//        }
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() != null){
+                    finish();
+                    startActivity(new Intent(login_activity.this, UserAreaActivity.class));
+                    return;
+                }
+            }
+        };
 
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
@@ -98,8 +115,8 @@ public class login_activity extends AppCompatActivity {
 
     private void userLogin() {
         //first getting the values
-        final String username = editTextUsername.getText().toString();
-        final String password = editTextPassword.getText().toString();
+        final String username = editTextUsername.getText().toString().trim();
+        final String password = editTextPassword.getText().toString().trim();
 
         //validating inputs
         if (TextUtils.isEmpty(username)) {
@@ -113,142 +130,46 @@ public class login_activity extends AppCompatActivity {
             editTextPassword.requestFocus();
             return;
         }
-
-        //if everything is fine
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_LOGIN,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            //creating a new user object
-                            //                    //if no error in response
-                            if (!obj.getBoolean("error")) {
-
-                                JSONObject userJson = obj.getJSONObject("user");
-                                User user = new User(
-                                        userJson.getInt("id"),
-                                        userJson.getString("username"),
-                                        userJson.getString("email"),
-                                        userJson.getString("gender"),
-                                        userJson.getString("firstname"),
-                                        userJson.getString("lastname")
-                                );
-                                //storing the user in shared preferences
-                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-                                //starting the main activity
-                                finish();
-                                startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
-
-                            }
-                            Toast.makeText(login_activity.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
-                            Toast.makeText(login_activity.this, e.toString(), Toast.LENGTH_SHORT).show();
-
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(login_activity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("password", password);
-                return params;
-            }
-        };
-        final ProgressBar progressBar = findViewById(R.id.progressBar);
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        final ProgressBar progressBar  =findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<String>() {
+        mAuth.signInWithEmailAndPassword(username,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onRequestFinished(Request<String> request) {
-
-                if (progressBar != null && progressBar.isShown())
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    getUserInfo();
+                    Toast.makeText(login_activity.this,"Successfully logged in",Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
+                }else{
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(login_activity.this,"email and passowrd doesn't match",Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+    private void getUserInfo(){
+        final String uid = mAuth.getCurrentUser().getUid();
 
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(uid)){
+                    String[] temp = dataSnapshot.getValue().toString().split("[{,}]");
+                    String[] firstname= temp[2].split("=");
+                    String[] gender = temp[3].split("=");
+                    String[] lastname = temp[4].split("=");
+                    String[] username = temp[5].split("=");
+                    User user = new User(uid,username[1],mAuth.getCurrentUser().getEmail(),gender[1],firstname[1],lastname[1]);
+                    System.out.println(user);
+                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                }
+            }
 
-//        class UserLogin extends AsyncTask<Void, Void, String> {
-//
-//            ProgressBar progressBar;
-//
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//                progressBar = (ProgressBar) findViewById(R.id.progressBar);
-//                progressBar.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String s) {
-//                super.onPostExecute(s);
-//                progressBar.setVisibility(View.GONE);
-//
-//
-//                try {
-//                    //converting response to json object
-//                    JSONObject obj = new JSONObject(s);
-//
-//                    //if no error in response
-//                    if (!obj.getBoolean("error")) {
-//                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-//
-//                        //getting the user from the response
-//                        JSONObject userJson = obj.getJSONObject("user");
-//
-//                        //creating a new user object
-//                        User user = new User(
-//                                userJson.getInt("id"),
-//                                userJson.getString("username"),
-//                                userJson.getString("email"),
-//                                userJson.getString("gender"),
-//                                userJson.getString("firstname"),
-//                                userJson.getString("lastname")
-//                        );
-//
-//                        //storing the user in shared preferences
-//                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-//
-//                        //starting the profile activity
-//                        finish();
-//                        startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
-//                    } else {
-//                        Toast.makeText(getApplicationContext(), "Invalid username or password", Toast.LENGTH_SHORT).show();
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            protected String doInBackground(Void... voids) {
-//                //creating request handler object
-//                RequestHandler requestHandler = new RequestHandler();
-//
-//                //creating request parameters
-//                HashMap<String, String> params = new HashMap<>();
-//                params.put("username", username);
-//                params.put("password", password);
-//
-//                //returning the response
-//                return requestHandler.sendPostRequest(URLs.URL_LOGIN, params);
-//            }
-//        }
-//
-//        UserLogin ul = new UserLogin();
-//        ul.execute();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -24,9 +25,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class UserAreaActivity extends FragmentActivity {
     TextView textViewId, textViewUsername, textViewEmail, textViewGender;
     ViewPager viewPager;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
     Toolbar toolbar;
     TabLayout tabLayout;
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -37,10 +42,20 @@ public class UserAreaActivity extends FragmentActivity {
 
         //if the user is not logged in
         //starting the login activity
-        if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
-            finish();
-            startActivity(new Intent(this, login_activity.class));
-        }else{
+        mAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() == null){
+                    finish();
+                    startActivity(new Intent(UserAreaActivity.this, login_activity.class));
+                }
+            }
+        };
+//        if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
+//            finish();
+//            startActivity(new Intent(this, login_activity.class));
+//        }else{
            // toolbar = findViewById(R.id.app_bar);
            // setActionBar(toolbar);
             tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -128,8 +143,7 @@ public class UserAreaActivity extends FragmentActivity {
 
            setTabIcons();
 
-        }
-
+//        }
 
 
 
@@ -191,5 +205,11 @@ public class UserAreaActivity extends FragmentActivity {
             super.onBackPressed();
             return;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
     }
 }

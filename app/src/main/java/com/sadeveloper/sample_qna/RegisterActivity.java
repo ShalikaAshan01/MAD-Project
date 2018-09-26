@@ -1,8 +1,10 @@
 package com.sadeveloper.sample_qna;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,12 +17,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,12 +34,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText editTextUsername, editTextEmail, editTextPassword,editTextConfirmPassword,editTextFirstname,editTextLastname;
     RadioGroup radioGroupGender;
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+
+        System.out.println("AA: " + FirebaseDatabase.getInstance().getReference().toString());
 
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
@@ -125,146 +133,35 @@ public class RegisterActivity extends AppCompatActivity {
             editTextPassword.requestFocus();
             return;
         }
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_REGISTER, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    JSONObject obj = new JSONObject(response);
-
-                    //creating a new user object
-                    //                    //if no error in response
-                    if (!obj.getBoolean("error")) {
-                        JSONObject userJson = obj.getJSONObject("user");
-                        User user = new User(
-                                userJson.getInt("id"),
-                                userJson.getString("username"),
-                                userJson.getString("email"),
-                                userJson.getString("gender"),
-                                userJson.getString("firstname"),
-                                userJson.getString("lastname")
-                        );
-                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-                        //starting the main activity
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
-                    }
-                    Toast.makeText(RegisterActivity.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    Toast.makeText(RegisterActivity.this, "Somthing occur", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        })
-        {
-            @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<>();
-                params.put("username",username);
-                params.put("email",email);
-                params.put("gender",gender);
-                params.put("password",password);
-                params.put("lastname",lastname);
-                params.put("firstname",firstname);
-                return params;
-            }
-        };
+//
         final ProgressBar progressBar  =findViewById(R.id.progressBar);
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
         progressBar.setVisibility(View.VISIBLE);
-        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<String>() {
-            @Override
-            public void onRequestFinished(Request<String> request) {
 
-                if (progressBar !=  null && progressBar.isShown())
+        //create authenticated user using email and password
+        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    String userID = mAuth.getCurrentUser().getUid();
+                    databaseReference.child(userID);
+                    DatabaseReference currentUser = databaseReference.child(userID);
+                    User user = new User(userID,username,email,gender,firstname,lastname);
+                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                    currentUser.child("firstname").setValue(firstname);
+                    currentUser.child("username").setValue(username);
+                    currentUser.child("lastname").setValue(lastname);
+                    currentUser.child("gender").setValue(gender);
                     progressBar.setVisibility(View.GONE);
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
+                }else{
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(RegisterActivity.this,"Can't create an Account",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-//        //if it passes all the validations
-//
-//        class RegisterUser extends AsyncTask<Void, Void, String> {
-//
-//            private ProgressBar progressBar;
-//
-//            @Override
-//            protected String doInBackground(Void... voids) {
-//                //creating request handler object
-//                RequestHandler requestHandler = new RequestHandler();
-//
-//                //creating request parameters
-//                HashMap<String, String> params = new HashMap<>();
-//                params.put("username", username);
-//                params.put("email", email);
-//                params.put("password", password);
-//                params.put("gender", gender);
-//                params.put("firstname",firstname);
-//                params.put("lastname",lastname);
-//
-//                //returing the response
-//                return requestHandler.sendPostRequest(URLs.URL_REGISTER, params);
-//            }
-//
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//                //displaying the progress bar while user registers on the server
-//                progressBar = (ProgressBar) findViewById(R.id.progressBar);
-//                progressBar.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String s) {
-//                super.onPostExecute(s);
-//                //hiding the progressbar after completion
-//                progressBar.setVisibility(View.GONE);
-//
-//                try {
-//                    //converting response to json object
-//                    JSONObject obj = new JSONObject(s);
-//
-//                    //if no error in response
-//                    if (!obj.getBoolean("error")) {
-//                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-//
-//                        //getting the user from the response
-//                        JSONObject userJson = obj.getJSONObject("user");
-//
-//                        //creating a new user object
-//                        User user = new User(
-//                                userJson.getInt("id"),
-//                                userJson.getString("username"),
-//                                userJson.getString("email"),
-//                                userJson.getString("gender"),
-//                                userJson.getString("firstname"),
-//                                userJson.getString("lastname")
-//                        );
-//
-//                        //storing the user in shared preferences
-//                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-//
-//                        //starting the profile activity
-//                        finish();
-//                        startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
-//                    } else {
-//                        Toast.makeText(getApplicationContext(), "Some error occurred", Toast.LENGTH_SHORT).show();
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//
-//        //executing the async task
-//        RegisterUser ru = new RegisterUser();
-//        ru.execute();
+
     }
     //back button double pressed to exit
     boolean doubleBackToExitPressedOnce = false;
