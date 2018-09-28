@@ -1,44 +1,37 @@
 package com.sadeveloper.sample_qna;
 
-import android.graphics.drawable.BitmapDrawable;
-import android.support.design.widget.FloatingActionButton;
-import android.view.KeyEvent;
-import android.view.ViewGroup.LayoutParams;
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -46,12 +39,14 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class user_details_activity extends Fragment {
     private static Button logout;
     private FloatingActionButton fab;
-    private TextView tv_questions, tv_degree, tv_works, tv_lives, tv_username,tv_email;
+    private TextView tv_questions, tv_degree, tv_works, tv_lives, tv_username, tv_email;
     private static String degree, work, live, fname, lname;
     private static String tempwork, templive, tempname, temp[];
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
     private static ProgressBar progressBar;
+    private static String email, username, firstname, lastname;
+    private static FirebaseUser user;
 
 
     @Nullable
@@ -83,23 +78,24 @@ public class user_details_activity extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
         String uid = mAuth.getCurrentUser().getUid();
 
-        progressBar =rootView.findViewById(R.id.progressBar2);
+        progressBar = rootView.findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.VISIBLE);
         databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String username = dataSnapshot.child("username").getValue().toString();
-                String firstname = dataSnapshot.child("firstname").getValue().toString();
-                String lastname = dataSnapshot.child("lastname").getValue().toString();
-                String email = mAuth.getCurrentUser().getEmail();
+                username = dataSnapshot.child("username").getValue().toString();
+                firstname = dataSnapshot.child("firstname").getValue().toString();
+                lastname = dataSnapshot.child("lastname").getValue().toString();
+                email = mAuth.getCurrentUser().getEmail();
                 tv_email.setText(email);
-                tv_username.setText(firstname+" " + lastname);
+                tv_username.setText(firstname + " " + lastname);
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity().getApplicationContext(), "something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -121,35 +117,7 @@ public class user_details_activity extends Fragment {
         logout.setOnClickListener((new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        AlertDialog.Builder a_builder = new AlertDialog.Builder(view.getContext());
-                        a_builder.setMessage("Do you want to logout ?")
-                                .setCancelable(false)
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        //getActivity().finish();
-                                        SharedPrefManager.getInstance(getActivity().getApplicationContext()).logout();
-                                        mAuth.signOut();
-                                        Intent intent = new Intent(getActivity().getApplicationContext(), login_activity.class);
-                                        getActivity().finish();
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
-
-
-                                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Logged out", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.cancel();
-                                    }
-                                });
-                        AlertDialog alert = a_builder.create();
-                        alert.setTitle("Alert !!!");
-                        alert.show();
-
-
+                        userLogout(getContext());
                     }
                 })
 
@@ -227,6 +195,7 @@ public class user_details_activity extends Fragment {
                     }
                 });
 
+                //Change user's password
                 changepassword.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -242,7 +211,28 @@ public class user_details_activity extends Fragment {
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
-                                                Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                                user = FirebaseAuth.getInstance().getCurrentUser();
+                                                AuthCredential authCredential = EmailAuthProvider.getCredential(email, editText.getText().toString().trim());
+                                                //reauthenticate  user
+                                                user.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            user.updatePassword(editTextcon.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        Toast.makeText(getActivity().getApplicationContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                                                        userLogout(getContext());
+                                                                    } else
+                                                                        Toast.makeText(getActivity().getApplicationContext(), "Cannot change password", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
+                                                        } else
+                                                            Toast.makeText(getActivity().getApplicationContext(), "Invalid Password", Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                });
                                             }
                                         })
                                         .setNegativeButton("Cancel",
@@ -427,5 +417,37 @@ public class user_details_activity extends Fragment {
 
 
         return rootView;
+    }
+
+    //logging out user
+    public void userLogout(Context context) {
+        AlertDialog.Builder a_builder = new AlertDialog.Builder(context);
+        a_builder.setMessage("Do you want to logout ?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //getActivity().finish();
+                        SharedPrefManager.getInstance(getActivity().getApplicationContext()).logout();
+                        mAuth.signOut();
+                        Intent intent = new Intent(getActivity().getApplicationContext(), login_activity.class);
+                        intent.putExtra("exit", true);
+                        getActivity().finish();
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+
+
+                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Logged out", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alert = a_builder.create();
+        alert.setTitle("Alert !!!");
+        alert.show();
     }
 }

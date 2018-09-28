@@ -1,26 +1,14 @@
 package com.sadeveloper.sample_qna;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewParent;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -52,12 +40,6 @@ public class UserAreaActivity extends FragmentActivity {
                 }
             }
         };
-//        if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
-//            finish();
-//            startActivity(new Intent(this, login_activity.class));
-//        }else{
-           // toolbar = findViewById(R.id.app_bar);
-           // setActionBar(toolbar);
             tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
             ViewPager viewPager = findViewById(R.id.view_pager);
@@ -68,6 +50,7 @@ public class UserAreaActivity extends FragmentActivity {
 
             setTabIcons();
 
+        //set tab icon on selected tabs
             tabLayout.addOnTabSelectedListener(
                     new TabLayout.OnTabSelectedListener()
                     {
@@ -142,35 +125,6 @@ public class UserAreaActivity extends FragmentActivity {
             );
 
            setTabIcons();
-
-//        }
-
-
-
-       /* textViewId = (TextView) findViewById(R.id.textViewId);
-        textViewUsername = (TextView) findViewById(R.id.textViewUsername);
-        textViewEmail = (TextView) findViewById(R.id.textViewEmail);
-        textViewGender = (TextView) findViewById(R.id.textViewGender);
-
-
-        //getting the current user
-        User user = SharedPrefManager.getInstance(this).getUser();
-
-        //setting the values to the textviews
-        textViewId.setText(String.valueOf(user.getId()));
-        textViewUsername.setText(user.getUsername());
-        textViewEmail.setText(user.getEmail());
-        textViewGender.setText(user.getGender());
-
-        //when the user presses logout button
-        //calling the logout method
-        findViewById(R.id.buttonLogout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                SharedPrefManager.getInstance(getApplicationContext()).logout();
-            }
-        });*/
     }
     public void setTabIcons(){
         tabLayout.getTabAt(0).setIcon(R.drawable.img_home_selected);
@@ -202,7 +156,8 @@ public class UserAreaActivity extends FragmentActivity {
                 }
             }, 2000);
         } else {
-            super.onBackPressed();
+            this.moveTaskToBack(true);
+            this.finish();
             return;
         }
     }

@@ -79,18 +79,18 @@
         android:layout_height="0dp"
         android:layout_marginLeft="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="41dp"
+        android:layout_marginTop="68dp"
         android:drawableLeft="@drawable/img_email"
         android:drawableStart="@drawable/img_email"
         android:gravity="center"
         android:text="@string/user_email"
         android:textSize="@dimen/profile_txt_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_username" />
 
     <TextView
         android:id="@+id/tv_works"
-        android:layout_width="146dp"
+        android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginStart="32dp"

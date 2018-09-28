@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,7 @@ public class login_activity extends AppCompatActivity {
 
     //back button double pressed to exit
     boolean doubleBackToExitPressedOnce = false;
+
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
@@ -45,7 +47,7 @@ public class login_activity extends AppCompatActivity {
 
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 2000);
     }
@@ -57,13 +59,10 @@ public class login_activity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
-        //if the user is already logged in we will directly start the profile activity
-        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
-            finish();
-            startActivity(new Intent(this, UserAreaActivity.class));
-            return;
-        }
 
+        if (getIntent().getBooleanExtra("exit", false)) {
+            finish();
+        }
 
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
@@ -106,37 +105,38 @@ public class login_activity extends AppCompatActivity {
             editTextPassword.requestFocus();
             return;
         }
-        final ProgressBar progressBar  =findViewById(R.id.progressBar);
+        final ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        mAuth.signInWithEmailAndPassword(username,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     getUserInfo();
-                    Toast.makeText(login_activity.this,"Successfully logged in",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(login_activity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     finish();
                     startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
-                }else{
+                } else {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(login_activity.this,"email and passowrd doesn't match",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(login_activity.this, "email and password doesn't match", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-    private void getUserInfo(){
+
+    private void getUserInfo() {
         final String uid = mAuth.getCurrentUser().getUid();
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild(uid)){
+                if (dataSnapshot.hasChild(uid)) {
                     String[] temp = dataSnapshot.getValue().toString().split("[{,}]");
-                    String[] firstname= temp[2].split("=");
+                    String[] firstname = temp[2].split("=");
                     String[] gender = temp[3].split("=");
                     String[] lastname = temp[4].split("=");
                     String[] username = temp[5].split("=");
-                    User user = new User(uid,username[1],mAuth.getCurrentUser().getEmail(),gender[1],firstname[1],lastname[1]);
+                    User user = new User(uid, username[1], mAuth.getCurrentUser().getEmail(), gender[1], firstname[1], lastname[1]);
                     System.out.println(user);
                     SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
                 }
@@ -147,5 +147,15 @@ public class login_activity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //if the user is already logged in we will directly start the profile activity
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            startActivity(new Intent(this, UserAreaActivity.class));
+        }
     }
 }
