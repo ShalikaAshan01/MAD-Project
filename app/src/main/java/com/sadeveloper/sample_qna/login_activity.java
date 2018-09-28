@@ -59,15 +59,12 @@ public class login_activity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+        editTextUsername = (EditText) findViewById(R.id.editTextUsername);
+        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
 
         if (getIntent().getBooleanExtra("exit", false)) {
             finish();
         }
-
-        editTextUsername = (EditText) findViewById(R.id.editTextUsername);
-        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-
-
         //if user presses on login
         //calling the method login
         findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
@@ -111,7 +108,6 @@ public class login_activity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    getUserInfo();
                     Toast.makeText(login_activity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     finish();
@@ -124,30 +120,6 @@ public class login_activity extends AppCompatActivity {
         });
     }
 
-    private void getUserInfo() {
-        final String uid = mAuth.getCurrentUser().getUid();
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(uid)) {
-                    String[] temp = dataSnapshot.getValue().toString().split("[{,}]");
-                    String[] firstname = temp[2].split("=");
-                    String[] gender = temp[3].split("=");
-                    String[] lastname = temp[4].split("=");
-                    String[] username = temp[5].split("=");
-                    User user = new User(uid, username[1], mAuth.getCurrentUser().getEmail(), gender[1], firstname[1], lastname[1]);
-                    System.out.println(user);
-                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     @Override
     protected void onStart() {

@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
 
-        System.out.println("AA: " + FirebaseDatabase.getInstance().getReference().toString());
+
 
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
@@ -136,7 +137,6 @@ public class RegisterActivity extends AppCompatActivity {
 //
         final ProgressBar progressBar  =findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-
         //create authenticated user using email and password
         mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -145,11 +145,10 @@ public class RegisterActivity extends AppCompatActivity {
                     String userID = mAuth.getCurrentUser().getUid();
                     databaseReference.child(userID);
                     DatabaseReference currentUser = databaseReference.child(userID);
-                    User user = new User(userID,username,email,gender,firstname,lastname);
-                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-                    currentUser.child("firstname").setValue(firstname);
+                    //save user in user table
+                    currentUser.child("firstname").setValue(StringUtils.capitalize(firstname.toLowerCase()));
                     currentUser.child("username").setValue(username);
-                    currentUser.child("lastname").setValue(lastname);
+                    currentUser.child("lastname").setValue(StringUtils.capitalize(lastname.toLowerCase()));
                     currentUser.child("gender").setValue(gender);
                     progressBar.setVisibility(View.GONE);
                     finish();

@@ -3,56 +3,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/background_light"
     android:gravity="right"
-    >
+    android:orientation="vertical">
 
     <ImageButton
         android:id="@+id/dismiss"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/arrow_left"
         android:layout_gravity="left"
         android:background="@android:color/transparent"
-        />
+        android:src="@drawable/arrow_left" />
 
     <Button
         android:id="@+id/btnChangeName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/changeusername"
         android:layout_marginTop="150dp"
         android:background="@drawable/backgroung_change_password_button"
-        />
+        android:text="@string/changeusername" />
+
     <Button
-                android:id="@+id/btnChangePassword"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/changepassword"
+        android:id="@+id/btnChangePassword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/backgroung_change_password_button"
-        />
+        android:text="@string/changepassword" />
 
     <Button
         android:id="@+id/btnChangeWorkin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/changework"
         android:background="@drawable/backgroung_change_password_button"
-        />
+        android:text="@string/changework" />
 
     <Button
         android:id="@+id/btnChangeDegree"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/changedegree"
-        android:background="@drawable/backgroung_change_password_button"/>
+        android:background="@drawable/backgroung_change_password_button"
+        android:text="@string/changedegree" />
 
     <Button
         android:id="@+id/btnChangeLivesin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/changelocation"
-        android:background="@drawable/backgroung_change_password_button" />
+        android:background="@drawable/backgroung_change_password_button"
+        android:text="@string/changelocation" />
+
+    <Button
+        android:id="@+id/btnChangePicture"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/backgroung_change_password_button"
+        android:text="@string/changepicture" />
 
 </LinearLayout>

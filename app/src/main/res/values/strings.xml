@@ -40,7 +40,7 @@
     <string name="news_feed3"> Does deleted files on android still exists on windows explorer ?</string>
     <string name="whats_on_mind_question">What\'s on your mind ? </string>
     <string name="post">Post</string>
-    <string name="profile_name">Add Your Name</string>
+    <string name="profile_name">fefe</string>
     <string name="btn_remove">Remove</string>
     <string name="no_answer">20 Answers</string>
     <string name="no_question">40 Questions</string>
@@ -52,23 +52,24 @@
     <string name="search">Search here...</string>
     <string name="notification">No notification for You</string>
     <string name="btn_logout">Logout</string>
-    <string name="user_email">Add Email Address</string>
+    <string name="user_email">efvdvde</string>
     <string name="new_password">New Password</string>
     <string name="con_password">Confirm Password</string>
     <string name="old_password">Old Password</string>
     <string name="changepassword">Change Password</string>
     <string name="changelocation">Change Location</string>
+    <string name="changepicture">Change Profile Picture</string>
     <string name="changework">Change Working Place</string>
     <string name="changedegree">Change Degree</string>
     <string name="changeusername">Change Name</string>
-    <string name="works_in">Works in SLIIT</string>
-    <string name="editwork">Works in</string>
+    <string name="works_in">vege</string>
+    <string name="editwork">Working Place</string>
     <string name="editlocation">Location</string>
     <string name="editdegree">Degree</string>
     <string name="editfirstname">First Name</string>
     <string name="editlastname">Last Name</string>
-    <string name="lives_in">Lives in Colombo</string>
-    <string name="degree">Bsc(hons) in Information Technology</string>
+    <string name="lives_in">fefe</string>
+    <string name="degree">fefefe</string>
 
 
 </resources>

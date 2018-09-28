@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.service.autofill.ImageTransformation;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,6 +43,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -60,6 +63,7 @@ public class user_details_activity extends Fragment {
     private static String email, username, firstname, lastname;
     private static FirebaseUser user;
     private StorageReference storageReference;
+    private static ImageView imgProfilePicture;
 
     @Nullable
     @Override
@@ -77,6 +81,7 @@ public class user_details_activity extends Fragment {
         tv_lives = rootView.findViewById(R.id.tv_lives);
         tv_email = rootView.findViewById(R.id.tv_email);
         tv_username = (TextView) rootView.findViewById(R.id.tv_username);
+        imgProfilePicture = rootView.findViewById(R.id.imgProfilePicture);
         storageReference = FirebaseStorage.getInstance().getReference();
         //set text view values from database
         mAuth = FirebaseAuth.getInstance();
@@ -121,16 +126,38 @@ public class user_details_activity extends Fragment {
                 }
 
                 tv_username.setText(" " + firstname + " " + lastname);
-                progressBar.setVisibility(View.INVISIBLE);
+//                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+//                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity().getApplicationContext(), "something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        StorageReference loadImage = storageReference.child("user_picture").child(mAuth.getCurrentUser().getUid());
+
+        loadImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).into(imgProfilePicture);
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
                 progressBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(getActivity().getApplicationContext(), "something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
+
+
+
+
+        //handle buttons
+        //logout button
         logout.setOnClickListener((new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
