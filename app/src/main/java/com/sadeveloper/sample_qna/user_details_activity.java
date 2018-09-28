@@ -1,9 +1,12 @@
 package com.sadeveloper.sample_qna;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -33,6 +38,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,6 +48,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
 public class user_details_activity extends Fragment {
+    private static final int GALERY_REQUEST_CODE = 1997;
     private static Button logout;
     private FloatingActionButton fab;
     private TextView tv_questions, tv_degree, tv_works, tv_lives, tv_username, tv_email;
@@ -50,11 +59,11 @@ public class user_details_activity extends Fragment {
     private static ProgressBar progressBar;
     private static String email, username, firstname, lastname;
     private static FirebaseUser user;
-    private static String tempwork, templive;
+    private StorageReference storageReference;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
+    public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(
                 R.layout.fragment_user_details, container, false
@@ -68,7 +77,7 @@ public class user_details_activity extends Fragment {
         tv_lives = rootView.findViewById(R.id.tv_lives);
         tv_email = rootView.findViewById(R.id.tv_email);
         tv_username = (TextView) rootView.findViewById(R.id.tv_username);
-
+        storageReference = FirebaseStorage.getInstance().getReference();
         //set text view values from database
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
@@ -83,7 +92,35 @@ public class user_details_activity extends Fragment {
                 lastname = dataSnapshot.child("lastname").getValue().toString();
                 email = mAuth.getCurrentUser().getEmail();
                 tv_email.setText(email);
-                tv_username.setText(firstname + " " + lastname);
+                work = dataSnapshot.child("work").getValue().toString().trim();
+                //set values for work textview
+                if (work.isEmpty() || work == null) {
+                    tv_works.setText(" Add Working Place");
+                    tv_works.setTextColor(Color.parseColor("#0091ea"));
+                } else {
+                    tv_works.setText(" Works in " + work);
+                    tv_works.setTextColor(Color.parseColor("#000000"));
+                }
+                live = dataSnapshot.child("location").getValue().toString();
+                //set value for live txt view
+                if (live == null || live.isEmpty()) {
+                    tv_lives.setText(" Add Location");
+                    tv_lives.setTextColor(Color.parseColor("#0091ea"));
+                } else {
+                    tv_lives.setText(" Lives in " + live);
+                    tv_lives.setTextColor(Color.parseColor("#000000"));
+                }
+                degree = dataSnapshot.child("degree").getValue().toString();
+                //set value for degree text view
+                if (degree == null || degree.isEmpty()) {
+                    tv_degree.setText(" Add Degree");
+                    tv_degree.setTextColor(Color.parseColor("#0091ea"));
+                } else {
+                    tv_degree.setText(" " + degree);
+                    tv_degree.setTextColor(Color.parseColor("#000000"));
+                }
+
+                tv_username.setText(" " + firstname + " " + lastname);
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
@@ -93,14 +130,6 @@ public class user_details_activity extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-        tempwork = (String) tv_works.getText();
-        templive = (String) tv_lives.getText();
-        degree = (String) tv_degree.getText();
-
-        work = tempwork.substring(9);
-        live = templive.substring(9);
 
         logout.setOnClickListener((new View.OnClickListener() {
                     @Override
@@ -133,12 +162,13 @@ public class user_details_activity extends Fragment {
                 Button btnChangeWorkin = (Button) popupView.findViewById(R.id.btnChangeWorkin);
                 Button btnChangeDegree = (Button) popupView.findViewById(R.id.btnChangeDegree);
                 Button btnChangeLivesin = (Button) popupView.findViewById(R.id.btnChangeLivesin);
+                Button btnChangePicture = (Button) popupView.findViewById(R.id.btnChangePicture);
 
+                //dismiss floating view
                 btnDismiss.setOnClickListener(new Button.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        // TODO Auto-generated method stub
                         popupWindow.dismiss();
                     }
                 });
@@ -149,12 +179,14 @@ public class user_details_activity extends Fragment {
                             public void onClick(View view) {
 
                                 LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
-                                View promptView = layoutInflater.inflate(R.layout.edit_message, null);
+                                final View promptView = layoutInflater.inflate(R.layout.edit_message, null);
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(arg0.getContext());
                                 alertDialogBuilder.setView(promptView);
                                 final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
                                 final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
                                 final EditText editTextcon = (EditText) promptView.findViewById(R.id.editTextconPw);
+                                final String con = editTextcon.getText().toString().trim();
+                                final String pass = editTextnew.getText().toString().trim();
                                 progress.setMessage("Updating Password...");
                                 alertDialogBuilder
                                         .setCancelable(false)
@@ -168,20 +200,25 @@ public class user_details_activity extends Fragment {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            user.updatePassword(editTextcon.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    //if passaword successfully changed
-                                                                    if (task.isSuccessful()) {
-                                                                        progress.dismiss();
-                                                                        Toast.makeText(getActivity().getApplicationContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
-                                                                        userLogout(getContext());
-                                                                    } else {
-                                                                        progress.dismiss();
-                                                                        Toast.makeText(getActivity().getApplicationContext(), "Cannot change password", Toast.LENGTH_SHORT).show();
+                                                            if (!(con.equalsIgnoreCase(pass) && pass.length() >= 8)) {
+                                                                progress.dismiss();
+                                                                Toast.makeText(getActivity().getApplicationContext(), "Password does not meet the requirements", Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                user.updatePassword(con).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        //if passaword successfully changed
+                                                                        if (task.isSuccessful()) {
+                                                                            progress.dismiss();
+                                                                            Toast.makeText(getActivity().getApplicationContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                                                            userLogout(getContext());
+                                                                        } else {
+                                                                            progress.dismiss();
+                                                                            Toast.makeText(getActivity().getApplicationContext(), "Cannot change password", Toast.LENGTH_SHORT).show();
+                                                                        }
                                                                     }
-                                                                }
-                                                            });
+                                                                });
+                                                            }
                                                         }
                                                         //if credintial invalid
                                                         else {
@@ -223,14 +260,24 @@ public class user_details_activity extends Fragment {
                                 final EditText editTextlastname = (EditText) promptView.findViewById(R.id.editTextlastname);
                                 editTextFirstname.setHint(firstname);
                                 editTextlastname.setHint(lastname);
+                                final String newFname = StringUtils.capitalize(editTextFirstname.getText().toString().toLowerCase());
+                                final String newLname = StringUtils.capitalize(editTextlastname.getText().toString().toLowerCase());
                                 progress.setMessage("Updating...");
                                 alertDialogBuilder
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 progress.show();
-                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("firstname").setValue(StringUtils.capitalize(editTextFirstname.getText().toString().toLowerCase()));
-                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("lastname").setValue(StringUtils.capitalize(editTextlastname.getText().toString().toLowerCase()));
+                                                String ffname = newFname;
+                                                String llname = newLname;
+                                                if (newFname.isEmpty() || newFname == null) {
+                                                    ffname = firstname;
+                                                }
+                                                if (newLname.isEmpty() || newLname == null) {
+                                                    llname = lastname;
+                                                }
+                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("firstname").setValue(ffname);
+                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("lastname").setValue(llname);
                                                 progress.dismiss();
                                                 Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
                                             }
@@ -268,7 +315,8 @@ public class user_details_activity extends Fragment {
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
-                                                Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("work").setValue(editTextwork.getText().toString());
+                                                work = editTextwork.getText().toString();
                                             }
                                         })
                                         .setNegativeButton("Cancel",
@@ -289,7 +337,7 @@ public class user_details_activity extends Fragment {
 
 
                 );
-
+                //change user's degree
                 btnChangeDegree.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -304,6 +352,8 @@ public class user_details_activity extends Fragment {
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
+                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("degree").setValue(editTextDegree.getText().toString());
+                                                degree = editTextDegree.getText().toString();
                                                 Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
                                             }
                                         })
@@ -318,11 +368,23 @@ public class user_details_activity extends Fragment {
                                 alert.setTitle("Change My Degree");
                                 popupWindow.dismiss();
                                 alert.show();
-
+                            }
+                        })
+                );
+                //change profile picture
+                btnChangePicture.setOnClickListener((new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, GALERY_REQUEST_CODE);
 
                             }
                         })
                 );
+
+
+                //cahnge user's location
                 btnChangeLivesin.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -337,6 +399,8 @@ public class user_details_activity extends Fragment {
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
+                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("location").setValue(editTextLocation.getText().toString());
+                                                live = editTextLocation.getText().toString();
                                                 Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
                                             }
                                         })
@@ -351,34 +415,13 @@ public class user_details_activity extends Fragment {
                                 alert.setTitle("Change My Location");
                                 popupWindow.dismiss();
                                 alert.show();
-
-
                             }
                         })
-
-
                 );
-
-
                 popupWindow.showAsDropDown(fab, 50, -30);
 
             }
         });
-
-
-//        tv_questions.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Fragment question=new Questions();
-//                FragmentTransaction transaction=getFragmentManager().beginTransaction();
-//                transaction.replace(R.id.fragmentQuestion,question);// give your fragment container id in first parameter
-//                transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
-//                transaction.commit();
-//
-//            }
-//        });
-
-
         return rootView;
     }
 
@@ -412,4 +455,26 @@ public class user_details_activity extends Fragment {
         alert.show();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GALERY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            progress.setMessage("Uploading Profile Picture");
+            progress.show();
+            Uri uri = data.getData();
+            StorageReference filepath = storageReference.child("user_picture").child(mAuth.getCurrentUser().getUid());
+            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progress.dismiss();
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully Uploaded", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progress.dismiss();
+                    Toast.makeText(getActivity().getApplicationContext(), "Cannot Upload Profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 }
