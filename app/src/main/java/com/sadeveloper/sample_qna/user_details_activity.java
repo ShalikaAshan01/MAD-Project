@@ -1,5 +1,6 @@
 package com.sadeveloper.sample_qna;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.apache.commons.lang3.StringUtils;
+
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
@@ -40,14 +43,14 @@ public class user_details_activity extends Fragment {
     private static Button logout;
     private FloatingActionButton fab;
     private TextView tv_questions, tv_degree, tv_works, tv_lives, tv_username, tv_email;
-    private static String degree, work, live, fname, lname;
-    private static String tempwork, templive, tempname, temp[];
+    static ProgressDialog progress;
+    private static String degree, work, live;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
     private static ProgressBar progressBar;
     private static String email, username, firstname, lastname;
     private static FirebaseUser user;
-
+    private static String tempwork, templive;
 
     @Nullable
     @Override
@@ -56,7 +59,7 @@ public class user_details_activity extends Fragment {
         View rootView = inflater.inflate(
                 R.layout.fragment_user_details, container, false
         );
-
+        progress = new ProgressDialog(getContext());
         logout = rootView.findViewById(R.id.btn_logout);
         fab = rootView.findViewById(R.id.fab);
         tv_questions = rootView.findViewById(R.id.tv_questions);
@@ -66,18 +69,10 @@ public class user_details_activity extends Fragment {
         tv_email = rootView.findViewById(R.id.tv_email);
         tv_username = (TextView) rootView.findViewById(R.id.tv_username);
 
-        //set text view values from Shared preference
-//        final String userid = SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getId();
-//        final String username = SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getFirstname() + " " +
-//                SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getLastname();
-//        tv_username.setText(username);
-//        tv_email.setText(SharedPrefManager.getInstance(getActivity().getApplicationContext()).getUser().getEmail());
-
         //set text view values from database
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
         String uid = mAuth.getCurrentUser().getUid();
-
         progressBar = rootView.findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.VISIBLE);
         databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
@@ -102,18 +97,11 @@ public class user_details_activity extends Fragment {
 
         tempwork = (String) tv_works.getText();
         templive = (String) tv_lives.getText();
-        tempname = (String) tv_username.getText();
         degree = (String) tv_degree.getText();
-
-        temp = tempname.split(" ");
-        fname = temp[0];
-        lname = temp[1];
 
         work = tempwork.substring(9);
         live = templive.substring(9);
 
-
-        //Alert box for log out
         logout.setOnClickListener((new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -123,46 +111,6 @@ public class user_details_activity extends Fragment {
 
 
         );
-
-
-        //dialog box
-//        changepassword.setOnClickListener((new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//                        LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
-//                        View promptView = layoutInflater.inflate(R.layout.edit_message, null);
-//                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
-//                        alertDialogBuilder.setView(promptView);
-//                        final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
-//                        final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
-//                        final EditText editTextcon = (EditText) promptView.findViewById(R.id.editTextconPw);
-//                        alertDialogBuilder
-//                                .setCancelable(false)
-//                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                    public void onClick(DialogInterface dialog, int id) {
-//                                        Toast.makeText(getActivity().getApplicationContext(),"Successfully Changed",Toast.LENGTH_SHORT).show();
-//                                    }
-//                                })
-//                                .setNegativeButton("Cancel",
-//                                        new DialogInterface.OnClickListener() {
-//                                            public void onClick(DialogInterface dialog, int id) {
-//                                                dialog.cancel();
-//                                            }
-//                                        });
-//
-//                        AlertDialog alert = alertDialogBuilder.create();
-//                        alert.setTitle("Change Password");
-//                        alert.show();
-//
-//
-//                    }
-//                })
-//
-//
-//
-//
-//        );
 
 
 //Show Pop up menu
@@ -207,13 +155,15 @@ public class user_details_activity extends Fragment {
                                 final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
                                 final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
                                 final EditText editTextcon = (EditText) promptView.findViewById(R.id.editTextconPw);
+                                progress.setMessage("Updating Password...");
                                 alertDialogBuilder
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
+                                                progress.show();
                                                 user = FirebaseAuth.getInstance().getCurrentUser();
                                                 AuthCredential authCredential = EmailAuthProvider.getCredential(email, editText.getText().toString().trim());
-                                                //reauthenticate  user
+                                                //re-authenticate  user
                                                 user.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -221,16 +171,23 @@ public class user_details_activity extends Fragment {
                                                             user.updatePassword(editTextcon.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<Void> task) {
+                                                                    //if passaword successfully changed
                                                                     if (task.isSuccessful()) {
+                                                                        progress.dismiss();
                                                                         Toast.makeText(getActivity().getApplicationContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
                                                                         userLogout(getContext());
-                                                                    } else
+                                                                    } else {
+                                                                        progress.dismiss();
                                                                         Toast.makeText(getActivity().getApplicationContext(), "Cannot change password", Toast.LENGTH_SHORT).show();
+                                                                    }
                                                                 }
                                                             });
-                                                        } else
+                                                        }
+                                                        //if credintial invalid
+                                                        else {
+                                                            progress.dismiss();
                                                             Toast.makeText(getActivity().getApplicationContext(), "Invalid Password", Toast.LENGTH_SHORT).show();
-
+                                                        }
                                                     }
                                                 });
                                             }
@@ -253,22 +210,28 @@ public class user_details_activity extends Fragment {
 
 
                 );
+                //update user's name
                 btnChangeName.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                                 LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
-                                View promptView = layoutInflater.inflate(R.layout.edit_name_popup, null);
+                                final View promptView = layoutInflater.inflate(R.layout.edit_name_popup, null);
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(arg0.getContext());
                                 alertDialogBuilder.setView(promptView);
                                 final EditText editTextFirstname = (EditText) promptView.findViewById(R.id.editTextFirstname);
                                 final EditText editTextlastname = (EditText) promptView.findViewById(R.id.editTextlastname);
-                                editTextFirstname.setHint(fname);
-                                editTextlastname.setHint(lname);
+                                editTextFirstname.setHint(firstname);
+                                editTextlastname.setHint(lastname);
+                                progress.setMessage("Updating...");
                                 alertDialogBuilder
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
+                                                progress.show();
+                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("firstname").setValue(StringUtils.capitalize(editTextFirstname.getText().toString().toLowerCase()));
+                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("lastname").setValue(StringUtils.capitalize(editTextlastname.getText().toString().toLowerCase()));
+                                                progress.dismiss();
                                                 Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
                                             }
                                         })
@@ -427,8 +390,6 @@ public class user_details_activity extends Fragment {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //getActivity().finish();
-                        SharedPrefManager.getInstance(getActivity().getApplicationContext()).logout();
                         mAuth.signOut();
                         Intent intent = new Intent(getActivity().getApplicationContext(), login_activity.class);
                         intent.putExtra("exit", true);
@@ -450,4 +411,5 @@ public class user_details_activity extends Fragment {
         alert.setTitle("Alert !!!");
         alert.show();
     }
+
 }
