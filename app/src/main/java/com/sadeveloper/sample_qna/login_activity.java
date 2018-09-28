@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,6 +29,7 @@ public class login_activity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private LoginButton facebookLogin;
 
     //back button double pressed to exit
     boolean doubleBackToExitPressedOnce = false;
@@ -61,6 +63,7 @@ public class login_activity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        facebookLogin = findViewById(R.id.facebook_login_button);
 
         if (getIntent().getBooleanExtra("exit", false)) {
             finish();

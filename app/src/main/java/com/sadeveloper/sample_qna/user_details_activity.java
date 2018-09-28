@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.service.autofill.ImageTransformation;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -52,7 +51,6 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class user_details_activity extends Fragment {
     private static final int GALERY_REQUEST_CODE = 1997;
-    private static Button logout;
     private FloatingActionButton fab;
     private TextView tv_questions, tv_degree, tv_works, tv_lives, tv_username, tv_email;
     static ProgressDialog progress;
@@ -73,7 +71,6 @@ public class user_details_activity extends Fragment {
                 R.layout.fragment_user_details, container, false
         );
         progress = new ProgressDialog(getContext());
-        logout = rootView.findViewById(R.id.btn_logout);
         fab = rootView.findViewById(R.id.fab);
         tv_questions = rootView.findViewById(R.id.tv_questions);
         tv_degree = rootView.findViewById(R.id.tv_degree);
@@ -147,8 +144,8 @@ public class user_details_activity extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Picasso.get().load(R.drawable.profile_picture).into(imgProfilePicture);
                 progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(getActivity().getApplicationContext(), "something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -157,18 +154,6 @@ public class user_details_activity extends Fragment {
 
 
         //handle buttons
-        //logout button
-        logout.setOnClickListener((new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        userLogout(getContext());
-                    }
-                })
-
-
-        );
-
-
 //Show Pop up menu
         fab.setOnClickListener(new Button.OnClickListener() {
 
@@ -190,7 +175,19 @@ public class user_details_activity extends Fragment {
                 Button btnChangeDegree = (Button) popupView.findViewById(R.id.btnChangeDegree);
                 Button btnChangeLivesin = (Button) popupView.findViewById(R.id.btnChangeLivesin);
                 Button btnChangePicture = (Button) popupView.findViewById(R.id.btnChangePicture);
+                Button logout = popupView.findViewById(R.id.btn_logout);
 
+                //logout button
+                logout.setOnClickListener((new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                userLogout(getContext());
+                                popupWindow.dismiss();
+                            }
+                        })
+
+
+                );
                 //dismiss floating view
                 btnDismiss.setOnClickListener(new Button.OnClickListener() {
 
@@ -404,8 +401,8 @@ public class user_details_activity extends Fragment {
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_PICK);
                         intent.setType("image/*");
+                        popupWindow.dismiss();
                         startActivityForResult(intent, GALERY_REQUEST_CODE);
-
                             }
                         })
                 );
