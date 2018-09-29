@@ -80,14 +80,12 @@ public class login_activity extends AppCompatActivity {
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
 
             }
 
             @Override
             public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
                 Toast.makeText(login_activity.this, "Access denied by user", Toast.LENGTH_SHORT).show();
 
             }

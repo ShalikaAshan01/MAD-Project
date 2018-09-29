@@ -7,7 +7,7 @@
     android:background="@drawable/gradient_home1">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgProfilePicture"
         android:layout_width="230dp"
         android:layout_height="200dp"

@@ -47,6 +47,8 @@ import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
@@ -62,7 +64,7 @@ public class user_details_activity extends Fragment {
     private static String email, username, firstname, lastname;
     private static FirebaseUser user;
     private StorageReference storageReference;
-    private static ImageView imgProfilePicture;
+    private static CircleImageView imgProfilePicture;
 
     @Nullable
     @Override
@@ -133,8 +135,8 @@ public class user_details_activity extends Fragment {
             }
         });
 
+        //set image view values
         StorageReference loadImage = storageReference.child("user_picture").child(mAuth.getCurrentUser().getUid());
-
         loadImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -148,8 +150,6 @@ public class user_details_activity extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
-
-
 
 
 
