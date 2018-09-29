@@ -199,34 +199,6 @@ public class login_activity extends AppCompatActivity {
         progressDialog.show();
 
 
-        GraphRequest request = GraphRequest.newMeRequest(
-                token,
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(
-                            JSONObject object,
-                            GraphResponse response) {
-                        try {
-                            String username = object.getString("name");
-                            String firstname = object.getString("first_name");
-                            String lastname = object.getString("last_name");
-                            String gender = object.getString("gender");
-                            JSONObject hometown = object.getJSONObject("hometown");
-                            String location = hometown.getString("name");
-
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,first_name,email,last_name,hometown,gender");
-        request.setParameters(parameters);
-        request.executeAsync();
-
-
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
@@ -247,5 +219,58 @@ public class login_activity extends AppCompatActivity {
 
                     }
                 });
+    }
+    private void userLoginFromFacebook(AccessToken token){
+        GraphRequest request = GraphRequest.newMeRequest(
+                token,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(
+                            JSONObject object,
+                            GraphResponse response) {
+                        try {
+                            final String username = object.getString("name");
+                            final String firstname = object.getString("first_name");
+                            final String lastname = object.getString("last_name");
+                            final String gender = object.getString("gender");
+                            final JSONObject hometown = object.getJSONObject("hometown");
+                            final String location = hometown.getString("name");
+
+                            final DatabaseReference currentUser = databaseReference.child(mAuth.getCurrentUser().getUid());
+
+                            ValueEventListener valueEventListener = new ValueEventListener(){
+
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(!dataSnapshot.exists()){
+                                        //save user in user table
+                                        currentUser.child("firstname").setValue(StringUtils.capitalize(firstname.toLowerCase()));
+                                        currentUser.child("username").setValue(username);
+                                        currentUser.child("lastname").setValue(StringUtils.capitalize(lastname.toLowerCase()));
+                                        currentUser.child("gender").setValue(gender);
+                                        currentUser.child("work").setValue("");
+                                        currentUser.child("degree").setValue("");
+                                        currentUser.child("location").setValue(location);
+                                        currentUser.child("picture").setValue("");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            };
+                            currentUser.addListenerForSingleValueEvent(valueEventListener);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,first_name,email,last_name,hometown,gender");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 }
