@@ -153,7 +153,6 @@ public class RegisterActivity extends AppCompatActivity {
                     currentUser.child("work").setValue("");
                     currentUser.child("degree").setValue("");
                     currentUser.child("location").setValue("");
-                    currentUser.child("picture").setValue("");
                     progressBar.setVisibility(View.GONE);
                     finish();
                     startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));

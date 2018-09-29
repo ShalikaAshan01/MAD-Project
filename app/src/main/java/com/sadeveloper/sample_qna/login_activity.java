@@ -1,17 +1,23 @@
 package com.sadeveloper.sample_qna;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -23,6 +29,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -44,15 +51,15 @@ import java.util.Set;
 
 public class login_activity extends AppCompatActivity {
 
-    EditText editTextUsername, editTextPassword;
+    private EditText editTextUsername, editTextPassword;
+    private TextView textViewForgotPassword;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     //facebook login
     private CallbackManager mCallbackManager;
-    private final static String TAG ="Face";
-
+    private final static String TAG = "Face";
 
 
     @Override
@@ -64,6 +71,7 @@ public class login_activity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
 
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
@@ -80,25 +88,83 @@ public class login_activity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 Log.d(TAG, "facebook:onCancel");
-                Toast.makeText(login_activity.this,"Access denied by user",Toast.LENGTH_SHORT).show();
+                Toast.makeText(login_activity.this, "Access denied by user", Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void onError(FacebookException error) {
                 Log.d(TAG, "facebook:onError", error);
-                Toast.makeText(login_activity.this,"FB Error",Toast.LENGTH_SHORT).show();
+                Toast.makeText(login_activity.this, "FB Error", Toast.LENGTH_SHORT).show();
 
 
                 // ...
             }
         });
-
-
-
         if (getIntent().getBooleanExtra("exit", false)) {
             finish();
         }
+        //if user press on forgottent password
+        final Context context = this;
+
+        textViewForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                final View promptView = layoutInflater.inflate(R.layout.edit_degree_popup, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
+                alertDialogBuilder.setView(promptView);
+
+                final EditText editText = promptView.findViewById(R.id.editTextdegree);
+                editText.setHint("Enter your E-mail Adresss");
+
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                final String email = editText.getText().toString().trim();
+                                if((!email.isEmpty())){
+                                    final ProgressDialog progressDialog = new ProgressDialog(context);
+                                    progressDialog.setMessage("Sending email...");
+                                    progressDialog.show();
+                                    System.out.println(email);
+                                    mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(getBaseContext(),"Password Reset email send to your account",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(getBaseContext(),"Cannot Send Email",Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
+                                }
+                                else{
+                                    Toast.makeText(getBaseContext(),"Please enter valid email address",Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+
+                AlertDialog alert = alertDialogBuilder.create();
+                alert.setTitle("Find Your Account ");
+                alert.show();
+
+            }
+        });
+
+
         //if user presses on login
         //calling the method login
         findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
@@ -154,8 +220,10 @@ public class login_activity extends AppCompatActivity {
             }
         });
     }
+
     //back button double pressed to exit
     boolean doubleBackToExitPressedOnce = false;
+
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
@@ -175,6 +243,7 @@ public class login_activity extends AppCompatActivity {
             }
         }, 2000);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -184,6 +253,7 @@ public class login_activity extends AppCompatActivity {
             startActivity(new Intent(this, UserAreaActivity.class));
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -192,12 +262,11 @@ public class login_activity extends AppCompatActivity {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void handleFacebookAccessToken(AccessToken token) {
+    private void handleFacebookAccessToken(final AccessToken token) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
         progressDialog.setMessage("Signing...");
         progressDialog.show();
-
 
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -206,11 +275,12 @@ public class login_activity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            userLoginFromFacebook(token);
                             finish();
                             startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
-                            Toast.makeText(login_activity.this,"Successfully logged in",Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss(); } else {
+                            Toast.makeText(login_activity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                        } else {
                             // If sign in fails, display a message to the user.
                             progressDialog.dismiss();
                             Toast.makeText(login_activity.this, "Authentication failed.",
@@ -220,7 +290,8 @@ public class login_activity extends AppCompatActivity {
                     }
                 });
     }
-    private void userLoginFromFacebook(AccessToken token){
+
+    private void userLoginFromFacebook(AccessToken token) {
         GraphRequest request = GraphRequest.newMeRequest(
                 token,
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -238,11 +309,11 @@ public class login_activity extends AppCompatActivity {
 
                             final DatabaseReference currentUser = databaseReference.child(mAuth.getCurrentUser().getUid());
 
-                            ValueEventListener valueEventListener = new ValueEventListener(){
+                            ValueEventListener valueEventListener = new ValueEventListener() {
 
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if(!dataSnapshot.exists()){
+                                    if (!dataSnapshot.exists()) {
                                         //save user in user table
                                         currentUser.child("firstname").setValue(StringUtils.capitalize(firstname.toLowerCase()));
                                         currentUser.child("username").setValue(username);
@@ -251,7 +322,6 @@ public class login_activity extends AppCompatActivity {
                                         currentUser.child("work").setValue("");
                                         currentUser.child("degree").setValue("");
                                         currentUser.child("location").setValue(location);
-                                        currentUser.child("picture").setValue("");
                                     }
                                 }
 

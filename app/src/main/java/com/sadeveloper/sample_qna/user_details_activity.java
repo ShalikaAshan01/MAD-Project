@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -94,6 +95,7 @@ public class user_details_activity extends Fragment {
                 lastname = dataSnapshot.child("lastname").getValue().toString();
                 email = mAuth.getCurrentUser().getEmail();
                 tv_email.setText(email);
+                tv_username.setText(" "+firstname + " " +lastname);
                 work = dataSnapshot.child("work").getValue().toString().trim();
                 //set values for work textview
                 if (work.isEmpty() || work == null) {
@@ -121,8 +123,6 @@ public class user_details_activity extends Fragment {
                     tv_degree.setText(" " + degree);
                     tv_degree.setTextColor(Color.parseColor("#000000"));
                 }
-
-                tv_username.setText(" " + firstname + " " + lastname);
 //                progressBar.setVisibility(View.INVISIBLE);
             }
 
@@ -458,13 +458,12 @@ public class user_details_activity extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mAuth.signOut();
+                        LoginManager.getInstance().logOut();
                         Intent intent = new Intent(getActivity().getApplicationContext(), login_activity.class);
                         intent.putExtra("exit", true);
                         getActivity().finish();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-
-
                         Toast.makeText(getActivity().getApplicationContext(), "Successfully Logged out", Toast.LENGTH_SHORT).show();
                     }
                 })
