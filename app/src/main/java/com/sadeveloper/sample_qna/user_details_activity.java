@@ -284,14 +284,14 @@ public class user_details_activity extends Fragment {
                                 final EditText editTextlastname = (EditText) promptView.findViewById(R.id.editTextlastname);
                                 editTextFirstname.setHint(firstname);
                                 editTextlastname.setHint(lastname);
-                                final String newFname = StringUtils.capitalize(editTextFirstname.getText().toString().toLowerCase());
-                                final String newLname = StringUtils.capitalize(editTextlastname.getText().toString().toLowerCase());
                                 progress.setMessage("Updating...");
                                 alertDialogBuilder
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 progress.show();
+                                                final String newFname = StringUtils.capitalize(editTextFirstname.getText().toString().toLowerCase());
+                                                final String newLname = StringUtils.capitalize(editTextlastname.getText().toString().toLowerCase());
                                                 String ffname = newFname;
                                                 String llname = newLname;
                                                 if (newFname.isEmpty() || newFname == null) {
@@ -303,7 +303,7 @@ public class user_details_activity extends Fragment {
                                                 databaseReference.child(mAuth.getCurrentUser().getUid()).child("firstname").setValue(ffname);
                                                 databaseReference.child(mAuth.getCurrentUser().getUid()).child("lastname").setValue(llname);
                                                 progress.dismiss();
-                                                Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed "+ ffname, Toast.LENGTH_SHORT).show();
                                             }
                                         })
                                         .setNegativeButton("Cancel",
