@@ -15,11 +15,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +64,8 @@ public class user_details_activity extends Fragment {
     private Context context1;
     //for floating action button
     FloatingActionMenu materialDesignFAM;
-    private FloatingActionButton fabLogout,fabName,fabPassword,fabWork,fabDegree,fabLocation,fabPicture;
+    private FloatingActionButton fabLogout, fabName, fabPassword, fabWork, fabDegree, fabLocation, fabPicture;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
@@ -77,13 +75,13 @@ public class user_details_activity extends Fragment {
         );
         //assign fab
         materialDesignFAM = rootView.findViewById(R.id.edit_floating_menu);
-        fabLogout =  rootView.findViewById(R.id.floating_logout);
-        fabPassword =  rootView.findViewById(R.id.floating_password);
-        fabName =  rootView.findViewById(R.id.floating_name);
-        fabDegree =  rootView.findViewById(R.id.floating_degree);
-        fabLocation =  rootView.findViewById(R.id.floating_locatiom);
-        fabWork =  rootView.findViewById(R.id.floating_word);
-        fabPicture =  rootView.findViewById(R.id.floating_picture);
+        fabLogout = rootView.findViewById(R.id.floating_logout);
+        fabPassword = rootView.findViewById(R.id.floating_password);
+        fabName = rootView.findViewById(R.id.floating_name);
+        fabDegree = rootView.findViewById(R.id.floating_degree);
+        fabLocation = rootView.findViewById(R.id.floating_locatiom);
+        fabWork = rootView.findViewById(R.id.floating_word);
+        fabPicture = rootView.findViewById(R.id.floating_picture);
         context1 = getContext();
         //assign values
         progress = new ProgressDialog(getContext());
@@ -109,7 +107,7 @@ public class user_details_activity extends Fragment {
                 lastname = dataSnapshot.child("lastname").getValue().toString();
                 email = mAuth.getCurrentUser().getEmail();
                 tv_email.setText(email);
-                tv_username.setText(" "+firstname + " " +lastname);
+                tv_username.setText(" " + firstname + " " + lastname);
                 work = dataSnapshot.child("work").getValue().toString().trim();
                 //set values for work textview
                 if (work.isEmpty() || work == null) {
@@ -172,244 +170,244 @@ public class user_details_activity extends Fragment {
             }
         });
 
-                        //Change user's password
-                fabPassword.setOnClickListener((new Button.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+        //Change user's password
+        fabPassword.setOnClickListener((new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                                LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
-                                final View promptView = layoutInflater.inflate(R.layout.edit_message, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
-                                alertDialogBuilder.setView(promptView);
-                                final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
-                                final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
-                                final EditText editTextcon = (EditText) promptView.findViewById(R.id.editTextconPw);
-                                progress.setMessage("Updating Password...");
-                                alertDialogBuilder
-                                        .setCancelable(false)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                final String con = editTextcon.getText().toString().trim();
-                                                final String pass = editTextnew.getText().toString().trim();
-                                                progress.show();
-                                                user = FirebaseAuth.getInstance().getCurrentUser();
-                                                AuthCredential authCredential = EmailAuthProvider.getCredential(email, editText.getText().toString().trim());
-                                                //re-authenticate  user
-                                                user.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            if (!(con.equalsIgnoreCase(pass) && pass.length() >= 8)) {
-                                                                progress.dismiss();
-                                                                Toast.makeText(getActivity().getApplicationContext(), "Password does not meet the requirements", Toast.LENGTH_SHORT).show();
-                                                            } else {
-                                                                user.updatePassword(con).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        //if passaword successfully changed
-                                                                        if (task.isSuccessful()) {
-                                                                            progress.dismiss();
-                                                                            Toast.makeText(getActivity().getApplicationContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
-                                                                            userLogout(getContext());
-                                                                        } else {
-                                                                            progress.dismiss();
-                                                                            Toast.makeText(getActivity().getApplicationContext(), "Cannot change password", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    }
-                                                                });
+                        LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
+                        final View promptView = layoutInflater.inflate(R.layout.edit_message, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
+                        alertDialogBuilder.setView(promptView);
+                        final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
+                        final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
+                        final EditText editTextcon = (EditText) promptView.findViewById(R.id.editTextconPw);
+                        progress.setMessage("Updating Password...");
+                        alertDialogBuilder
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        final String con = editTextcon.getText().toString().trim();
+                                        final String pass = editTextnew.getText().toString().trim();
+                                        progress.show();
+                                        user = FirebaseAuth.getInstance().getCurrentUser();
+                                        AuthCredential authCredential = EmailAuthProvider.getCredential(email, editText.getText().toString().trim());
+                                        //re-authenticate  user
+                                        user.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    if (!(con.equalsIgnoreCase(pass) && pass.length() >= 8)) {
+                                                        progress.dismiss();
+                                                        Toast.makeText(getActivity().getApplicationContext(), "Password does not meet the requirements", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        user.updatePassword(con).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                //if passaword successfully changed
+                                                                if (task.isSuccessful()) {
+                                                                    progress.dismiss();
+                                                                    Toast.makeText(getActivity().getApplicationContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                                                    userLogout(getContext());
+                                                                } else {
+                                                                    progress.dismiss();
+                                                                    Toast.makeText(getActivity().getApplicationContext(), "Cannot change password", Toast.LENGTH_SHORT).show();
+                                                                }
                                                             }
-                                                        }
-                                                        //if credintial invalid
-                                                        else {
-                                                            progress.dismiss();
-                                                            Toast.makeText(getActivity().getApplicationContext(), "Invalid Password", Toast.LENGTH_SHORT).show();
-                                                        }
+                                                        });
                                                     }
-                                                });
-                                            }
-                                        })
-                                        .setNegativeButton("Cancel",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        dialog.cancel();
-                                                    }
-                                                });
-
-                                AlertDialog alert = alertDialogBuilder.create();
-                                alert.setTitle("Change Password");
-                                alert.show();
-
-
-                            }
-                        })
-
-
-                );
-
-                        //update user's name
-                fabName.setOnClickListener((new Button.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                                LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
-                                final View promptView = layoutInflater.inflate(R.layout.edit_name_popup, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
-                                alertDialogBuilder.setView(promptView);
-                                final EditText editTextFirstname = (EditText) promptView.findViewById(R.id.editTextFirstname);
-                                final EditText editTextlastname = (EditText) promptView.findViewById(R.id.editTextlastname);
-                                editTextFirstname.setHint(firstname);
-                                editTextlastname.setHint(lastname);
-                                progress.setMessage("Updating...");
-                                alertDialogBuilder
-                                        .setCancelable(false)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                progress.show();
-                                                final String newFname = StringUtils.capitalize(editTextFirstname.getText().toString().toLowerCase());
-                                                final String newLname = StringUtils.capitalize(editTextlastname.getText().toString().toLowerCase());
-                                                String ffname = newFname;
-                                                String llname = newLname;
-                                                if (newFname.isEmpty() || newFname == null) {
-                                                    ffname = firstname;
                                                 }
-                                                if (newLname.isEmpty() || newLname == null) {
-                                                    llname = lastname;
+                                                //if credintial invalid
+                                                else {
+                                                    progress.dismiss();
+                                                    Toast.makeText(getActivity().getApplicationContext(), "Invalid Password", Toast.LENGTH_SHORT).show();
                                                 }
-                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("firstname").setValue(ffname);
-                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("lastname").setValue(llname);
-                                                progress.dismiss();
-                                                Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed "+ ffname, Toast.LENGTH_SHORT).show();
                                             }
-                                        })
-                                        .setNegativeButton("Cancel",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        dialog.cancel();
-                                                    }
-                                                });
-
-                                AlertDialog alert = alertDialogBuilder.create();
-                                alert.setTitle("Change Name");
-                                alert.show();
-
-
-                            }
-                        })
-
-
-                );
-
-                fabWork.setOnClickListener((new Button.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                                LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
-                                View promptView = layoutInflater.inflate(R.layout.edit_works_popup, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
-                                alertDialogBuilder.setView(promptView);
-                                final EditText editTextwork = (EditText) promptView.findViewById(R.id.editTextwork);
-                                editTextwork.setHint(work);
-                                alertDialogBuilder
-                                        .setCancelable(false)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        });
+                                    }
+                                })
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
-                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("work").setValue(editTextwork.getText().toString());
-                                                work = editTextwork.getText().toString();
+                                                dialog.cancel();
                                             }
-                                        })
-                                        .setNegativeButton("Cancel",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        dialog.cancel();
-                                                    }
-                                                });
+                                        });
 
-                                AlertDialog alert = alertDialogBuilder.create();
-                                alert.setTitle("Change Working Place");
-                                alert.show();
-                            }
-                        })
+                        AlertDialog alert = alertDialogBuilder.create();
+                        alert.setTitle("Change Password");
+                        alert.show();
 
 
-                );
-                //change user's degree
-                fabDegree.setOnClickListener((new Button.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+                    }
+                })
 
-                                LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
-                                View promptView = layoutInflater.inflate(R.layout.edit_degree_popup, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
-                                alertDialogBuilder.setView(promptView);
-                                final EditText editTextDegree = (EditText) promptView.findViewById(R.id.editTextdegree);
-                                editTextDegree.setHint(degree);
-                                alertDialogBuilder
-                                        .setCancelable(false)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+        );
+
+        //update user's name
+        fabName.setOnClickListener((new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
+                        final View promptView = layoutInflater.inflate(R.layout.edit_name_popup, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
+                        alertDialogBuilder.setView(promptView);
+                        final EditText editTextFirstname = (EditText) promptView.findViewById(R.id.editTextFirstname);
+                        final EditText editTextlastname = (EditText) promptView.findViewById(R.id.editTextlastname);
+                        editTextFirstname.setHint(firstname);
+                        editTextlastname.setHint(lastname);
+                        progress.setMessage("Updating...");
+                        alertDialogBuilder
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        progress.show();
+                                        final String newFname = StringUtils.capitalize(editTextFirstname.getText().toString().toLowerCase());
+                                        final String newLname = StringUtils.capitalize(editTextlastname.getText().toString().toLowerCase());
+                                        String ffname = newFname;
+                                        String llname = newLname;
+                                        if (newFname.isEmpty() || newFname == null) {
+                                            ffname = firstname;
+                                        }
+                                        if (newLname.isEmpty() || newLname == null) {
+                                            llname = lastname;
+                                        }
+                                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("firstname").setValue(ffname);
+                                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("lastname").setValue(llname);
+                                        progress.dismiss();
+                                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed " + ffname, Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
-                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("degree").setValue(editTextDegree.getText().toString());
-                                                degree = editTextDegree.getText().toString();
-                                                Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                                dialog.cancel();
                                             }
-                                        })
-                                        .setNegativeButton("Cancel",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        dialog.cancel();
-                                                    }
-                                                });
+                                        });
 
-                                AlertDialog alert = alertDialogBuilder.create();
-                                alert.setTitle("Change My Degree");
-                                alert.show();
-                            }
-                        })
-                );
-                //change profile picture
-                fabPicture.setOnClickListener((new Button.OnClickListener() {
+                        AlertDialog alert = alertDialogBuilder.create();
+                        alert.setTitle("Change Name");
+                        alert.show();
+
+
+                    }
+                })
+
+
+        );
+
+        fabWork.setOnClickListener((new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
+                        View promptView = layoutInflater.inflate(R.layout.edit_works_popup, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
+                        alertDialogBuilder.setView(promptView);
+                        final EditText editTextwork = (EditText) promptView.findViewById(R.id.editTextwork);
+                        editTextwork.setHint(work);
+                        alertDialogBuilder
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("work").setValue(editTextwork.getText().toString());
+                                        work = editTextwork.getText().toString();
+                                    }
+                                })
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+                        AlertDialog alert = alertDialogBuilder.create();
+                        alert.setTitle("Change Working Place");
+                        alert.show();
+                    }
+                })
+
+
+        );
+        //change user's degree
+        fabDegree.setOnClickListener((new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
+                        View promptView = layoutInflater.inflate(R.layout.edit_degree_popup, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
+                        alertDialogBuilder.setView(promptView);
+                        final EditText editTextDegree = (EditText) promptView.findViewById(R.id.editTextdegree);
+                        editTextDegree.setHint(degree);
+                        alertDialogBuilder
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("degree").setValue(editTextDegree.getText().toString());
+                                        degree = editTextDegree.getText().toString();
+                                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+                        AlertDialog alert = alertDialogBuilder.create();
+                        alert.setTitle("Change My Degree");
+                        alert.show();
+                    }
+                })
+        );
+        //change profile picture
+        fabPicture.setOnClickListener((new Button.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_PICK);
                         intent.setType("image/*");
                         startActivityForResult(intent, GALERY_REQUEST_CODE);
-                            }
-                        })
-                );
+                    }
+                })
+        );
 
 
-                //cahnge user's location
-                fabLocation.setOnClickListener((new Button.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+        //cahnge user's location
+        fabLocation.setOnClickListener((new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                                LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
-                                View promptView = layoutInflater.inflate(R.layout.edit_location_popup, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
-                                alertDialogBuilder.setView(promptView);
-                                final EditText editTextLocation = (EditText) promptView.findViewById(R.id.editTextlocation);
-                                editTextLocation.setHint(live);
-                                alertDialogBuilder
-                                        .setCancelable(false)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
+                        View promptView = layoutInflater.inflate(R.layout.edit_location_popup, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
+                        alertDialogBuilder.setView(promptView);
+                        final EditText editTextLocation = (EditText) promptView.findViewById(R.id.editTextlocation);
+                        editTextLocation.setHint(live);
+                        alertDialogBuilder
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("location").setValue(editTextLocation.getText().toString());
+                                        live = editTextLocation.getText().toString();
+                                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
-                                                databaseReference.child(mAuth.getCurrentUser().getUid()).child("location").setValue(editTextLocation.getText().toString());
-                                                live = editTextLocation.getText().toString();
-                                                Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                                dialog.cancel();
                                             }
-                                        })
-                                        .setNegativeButton("Cancel",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        dialog.cancel();
-                                                    }
-                                                });
+                                        });
 
-                                AlertDialog alert = alertDialogBuilder.create();
-                                alert.setTitle("Change My Location");
-                                alert.show();
-                            }
-                        })
-                );
+                        AlertDialog alert = alertDialogBuilder.create();
+                        alert.setTitle("Change My Location");
+                        alert.show();
+                    }
+                })
+        );
         return rootView;
     }
 
