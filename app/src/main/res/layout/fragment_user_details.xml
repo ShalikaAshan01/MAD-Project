@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_home1">
@@ -38,6 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_questions"
+        android:drawableStart="@drawable/img_answer"
         app:layout_constraintTop_toBottomOf="@+id/imgProfilePicture" />
 
     <TextView
@@ -53,6 +53,7 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_answer"
         app:layout_constraintEnd_toStartOf="@+id/tv_answer"
         app:layout_constraintHorizontal_bias="0.5"
+        android:drawableStart="@drawable/img_qna"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -66,7 +67,7 @@
         android:layout_marginTop="111dp"
         android:text="@string/profile_name"
         android:textColor="@android:color/black"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,6 +102,7 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/profile_txt_size"
         app:layout_constraintStart_toStartOf="parent"
+        android:drawableStart="@drawable/img_work"
         app:layout_constraintTop_toBottomOf="@+id/tv_degree" />
 
     <TextView
@@ -116,6 +118,7 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/profile_txt_size"
         app:layout_constraintStart_toStartOf="parent"
+        android:drawableStart="@drawable/img_location"
         app:layout_constraintTop_toBottomOf="@+id/tv_works" />
 
     <TextView
@@ -131,6 +134,7 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/profile_txt_size"
         app:layout_constraintStart_toStartOf="parent"
+        android:drawableStart="@drawable/img_school"
         app:layout_constraintTop_toBottomOf="@+id/tv_email" />
 
     <!--<Button-->
@@ -167,6 +171,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_answer"
         app:layout_constraintVertical_bias="1.0"
+        android:layout_alignParentEnd="true"
+        android:focusable="true"
         app:srcCompat="@drawable/img_answer" />
 
     <ProgressBar
