@@ -74,6 +74,6 @@
     <string name="pictureDescription">User Profile</string>
     <string name="facebook_app_id">413797492483959</string>
     <string name="fb_login_protocol_scheme">fb413797492483959</string>
-
+    <string name="com_facebook_loginview_log_out_button">Continue with Facebook</string>
 
 </resources>

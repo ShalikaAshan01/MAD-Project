@@ -65,7 +65,7 @@
             android:inputType="textPassword"
             android:maxLines="1"
             android:padding="8dp"
-            android:textColorHint="#fff" />
+            android:textColorHint="#fff"/>
         <Button
             android:id="@+id/buttonLogin"
             android:layout_width="match_parent"
