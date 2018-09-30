@@ -1,22 +1,4 @@
 <resources>
-    <!--<string name="app_name">sample_QnA</string>-->
-    <!--<string name="login_username">Username</string>-->
-    <!--<string name="login_password">Password</string>-->
-    <!--<string name="login_button">Login</string>-->
-    <!--<string name="login_text">Don\'t have an account?\n Register Here</string>-->
-    <!--<string name="register_username">Username</string>-->
-    <!--<string name="register_email">Email</string>-->
-    <!--<string name="register_password">Password</string>-->
-    <!--<string name="register_confirm_password">Confirm Password</string>-->
-    <!--<string name="register_male">Male</string>-->
-    <!--<string name="register_female">Female</string>-->
-    <!--<string name="register_button">Register</string>-->
-    <!--<string name="register_text">Already Registered?\nLogin Here</string>-->
-    <!--<string name="register_firstname">First Name</string>-->
-    <!--<string name="register_lastname">Last Name</string>-->
-    <!--<string name="ask_question">Ask</string>-->
-    <!--<string name="ask_question_text">Add a Question?</string>-->
-    <!--<string name="ask_both">Both</string>-->
     <string name="app_name">Brain Booster</string>
     <string name="login_username">Email Address</string>
     <string name="login_password">Password</string>
@@ -56,12 +38,12 @@
     <string name="new_password">New Password</string>
     <string name="con_password">Confirm Password</string>
     <string name="old_password">Old Password</string>
-    <string name="changepassword">Change Password</string>
-    <string name="changelocation">Change Location</string>
-    <string name="changepicture">Change Profile Picture</string>
-    <string name="changework">Change Working Place</string>
-    <string name="changedegree">Change Degree</string>
-    <string name="changeusername">Change Name</string>
+    <string name="changepassword">Update Password</string>
+    <string name="changelocation">Update Location</string>
+    <string name="changepicture">Update Profile Picture</string>
+    <string name="changework">Update Working Place</string>
+    <string name="changedegree">Update Degree</string>
+    <string name="changeusername">Update Name</string>
     <string name="works_in"></string>
     <string name="editwork">Working Place</string>
     <string name="editlocation">Location</string>
@@ -75,5 +57,5 @@
     <string name="facebook_app_id">413797492483959</string>
     <string name="fb_login_protocol_scheme">fb413797492483959</string>
     <string name="com_facebook_loginview_log_out_button">Continue with Facebook</string>
-
+    <string name="editDetails">Edit Details</string>
 </resources>

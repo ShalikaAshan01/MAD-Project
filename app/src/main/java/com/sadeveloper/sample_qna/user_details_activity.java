@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -26,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,7 +54,6 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class user_details_activity extends Fragment {
     private static final int GALERY_REQUEST_CODE = 1997;
-    private FloatingActionButton fab;
     private TextView tv_questions, tv_degree, tv_works, tv_lives, tv_username, tv_email;
     static ProgressDialog progress;
     private static String degree, work, live;
@@ -64,7 +64,10 @@ public class user_details_activity extends Fragment {
     private static FirebaseUser user;
     private StorageReference storageReference;
     private static CircleImageView imgProfilePicture;
-
+    private Context context1;
+    //for floating action button
+    FloatingActionMenu materialDesignFAM;
+    private FloatingActionButton fabLogout,fabName,fabPassword,fabWork,fabDegree,fabLocation,fabPicture;
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater,
@@ -72,8 +75,18 @@ public class user_details_activity extends Fragment {
         View rootView = inflater.inflate(
                 R.layout.fragment_user_details, container, false
         );
+        //assign fab
+        materialDesignFAM = rootView.findViewById(R.id.edit_floating_menu);
+        fabLogout =  rootView.findViewById(R.id.floating_logout);
+        fabPassword =  rootView.findViewById(R.id.floating_password);
+        fabName =  rootView.findViewById(R.id.floating_name);
+        fabDegree =  rootView.findViewById(R.id.floating_degree);
+        fabLocation =  rootView.findViewById(R.id.floating_locatiom);
+        fabWork =  rootView.findViewById(R.id.floating_word);
+        fabPicture =  rootView.findViewById(R.id.floating_picture);
+        context1 = getContext();
+        //assign values
         progress = new ProgressDialog(getContext());
-        fab = rootView.findViewById(R.id.fab);
         tv_questions = rootView.findViewById(R.id.tv_questions);
         tv_degree = rootView.findViewById(R.id.tv_degree);
         tv_works = rootView.findViewById(R.id.tv_works);
@@ -151,59 +164,22 @@ public class user_details_activity extends Fragment {
         });
 
 
-
-        //handle buttons
-//Show Pop up menu
-        fab.setOnClickListener(new Button.OnClickListener() {
-
+        //handle fab onclick
+        fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(final View arg0) {
-                LayoutInflater layoutInflater
-                        = (LayoutInflater) getActivity().getApplicationContext()
-                        .getSystemService(LAYOUT_INFLATER_SERVICE);
-                final View popupView = layoutInflater.inflate(R.layout.profile_popup, null);
-                final PopupWindow popupWindow = new PopupWindow(
-                        popupView,
-                        LayoutParams.MATCH_PARENT,
-                        LayoutParams.MATCH_PARENT, false);
+            public void onClick(View view) {
+                userLogout(context1);
+            }
+        });
 
-                ImageButton btnDismiss = (ImageButton) popupView.findViewById(R.id.dismiss);
-                Button changepassword = (Button) popupView.findViewById(R.id.btnChangePassword);
-                Button btnChangeName = (Button) popupView.findViewById(R.id.btnChangeName);
-                Button btnChangeWorkin = (Button) popupView.findViewById(R.id.btnChangeWorkin);
-                Button btnChangeDegree = (Button) popupView.findViewById(R.id.btnChangeDegree);
-                Button btnChangeLivesin = (Button) popupView.findViewById(R.id.btnChangeLivesin);
-                Button btnChangePicture = (Button) popupView.findViewById(R.id.btnChangePicture);
-                Button logout = popupView.findViewById(R.id.btn_logout);
-
-                //logout button
-                logout.setOnClickListener((new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                userLogout(getContext());
-                                popupWindow.dismiss();
-                            }
-                        })
-
-
-                );
-                //dismiss floating view
-                btnDismiss.setOnClickListener(new Button.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        popupWindow.dismiss();
-                    }
-                });
-
-                //Change user's password
-                changepassword.setOnClickListener((new Button.OnClickListener() {
+                        //Change user's password
+                fabPassword.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                                 LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
                                 final View promptView = layoutInflater.inflate(R.layout.edit_message, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(arg0.getContext());
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                                 alertDialogBuilder.setView(promptView);
                                 final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
                                 final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
@@ -261,7 +237,6 @@ public class user_details_activity extends Fragment {
 
                                 AlertDialog alert = alertDialogBuilder.create();
                                 alert.setTitle("Change Password");
-                                popupWindow.dismiss();
                                 alert.show();
 
 
@@ -270,14 +245,15 @@ public class user_details_activity extends Fragment {
 
 
                 );
-                //update user's name
-                btnChangeName.setOnClickListener((new Button.OnClickListener() {
+
+                        //update user's name
+                fabName.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                                 LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
                                 final View promptView = layoutInflater.inflate(R.layout.edit_name_popup, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(arg0.getContext());
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                                 alertDialogBuilder.setView(promptView);
                                 final EditText editTextFirstname = (EditText) promptView.findViewById(R.id.editTextFirstname);
                                 final EditText editTextlastname = (EditText) promptView.findViewById(R.id.editTextlastname);
@@ -314,7 +290,6 @@ public class user_details_activity extends Fragment {
 
                                 AlertDialog alert = alertDialogBuilder.create();
                                 alert.setTitle("Change Name");
-                                popupWindow.dismiss();
                                 alert.show();
 
 
@@ -324,13 +299,13 @@ public class user_details_activity extends Fragment {
 
                 );
 
-                btnChangeWorkin.setOnClickListener((new Button.OnClickListener() {
+                fabWork.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                                 LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
                                 View promptView = layoutInflater.inflate(R.layout.edit_works_popup, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(arg0.getContext());
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                                 alertDialogBuilder.setView(promptView);
                                 final EditText editTextwork = (EditText) promptView.findViewById(R.id.editTextwork);
                                 editTextwork.setHint(work);
@@ -351,23 +326,20 @@ public class user_details_activity extends Fragment {
 
                                 AlertDialog alert = alertDialogBuilder.create();
                                 alert.setTitle("Change Working Place");
-                                popupWindow.dismiss();
                                 alert.show();
-
-
                             }
                         })
 
 
                 );
                 //change user's degree
-                btnChangeDegree.setOnClickListener((new Button.OnClickListener() {
+                fabDegree.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                                 LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
                                 View promptView = layoutInflater.inflate(R.layout.edit_degree_popup, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(arg0.getContext());
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                                 alertDialogBuilder.setView(promptView);
                                 final EditText editTextDegree = (EditText) promptView.findViewById(R.id.editTextdegree);
                                 editTextDegree.setHint(degree);
@@ -389,18 +361,16 @@ public class user_details_activity extends Fragment {
 
                                 AlertDialog alert = alertDialogBuilder.create();
                                 alert.setTitle("Change My Degree");
-                                popupWindow.dismiss();
                                 alert.show();
                             }
                         })
                 );
                 //change profile picture
-                btnChangePicture.setOnClickListener((new Button.OnClickListener() {
+                fabPicture.setOnClickListener((new Button.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_PICK);
                         intent.setType("image/*");
-                        popupWindow.dismiss();
                         startActivityForResult(intent, GALERY_REQUEST_CODE);
                             }
                         })
@@ -408,13 +378,13 @@ public class user_details_activity extends Fragment {
 
 
                 //cahnge user's location
-                btnChangeLivesin.setOnClickListener((new Button.OnClickListener() {
+                fabLocation.setOnClickListener((new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                                 LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
                                 View promptView = layoutInflater.inflate(R.layout.edit_location_popup, null);
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(arg0.getContext());
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                                 alertDialogBuilder.setView(promptView);
                                 final EditText editTextLocation = (EditText) promptView.findViewById(R.id.editTextlocation);
                                 editTextLocation.setHint(live);
@@ -436,15 +406,10 @@ public class user_details_activity extends Fragment {
 
                                 AlertDialog alert = alertDialogBuilder.create();
                                 alert.setTitle("Change My Location");
-                                popupWindow.dismiss();
                                 alert.show();
                             }
                         })
                 );
-                popupWindow.showAsDropDown(fab, 50, -30);
-
-            }
-        });
         return rootView;
     }
 
