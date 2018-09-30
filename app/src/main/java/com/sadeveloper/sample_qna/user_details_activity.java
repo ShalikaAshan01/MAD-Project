@@ -20,7 +20,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -209,13 +208,13 @@ public class user_details_activity extends Fragment {
                                 final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
                                 final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
                                 final EditText editTextcon = (EditText) promptView.findViewById(R.id.editTextconPw);
-                                final String con = editTextcon.getText().toString().trim();
-                                final String pass = editTextnew.getText().toString().trim();
                                 progress.setMessage("Updating Password...");
                                 alertDialogBuilder
                                         .setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
+                                                final String con = editTextcon.getText().toString().trim();
+                                                final String pass = editTextnew.getText().toString().trim();
                                                 progress.show();
                                                 user = FirebaseAuth.getInstance().getCurrentUser();
                                                 AuthCredential authCredential = EmailAuthProvider.getCredential(email, editText.getText().toString().trim());
