@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.github.clans.fab.FloatingActionButton;
@@ -46,8 +45,6 @@ import com.squareup.picasso.Picasso;
 import org.apache.commons.lang3.StringUtils;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
 public class user_details_activity extends Fragment {
@@ -86,6 +83,7 @@ public class user_details_activity extends Fragment {
         context1 = getContext();
         //assign values
         progress = new ProgressDialog(getContext());
+        progress.setCanceledOnTouchOutside(false);
         tv_questions = rootView.findViewById(R.id.tv_questions);
         tv_degree = rootView.findViewById(R.id.tv_degree);
         tv_works = rootView.findViewById(R.id.tv_works);
@@ -94,6 +92,7 @@ public class user_details_activity extends Fragment {
         tv_username = (TextView) rootView.findViewById(R.id.tv_username);
         imgProfilePicture = rootView.findViewById(R.id.imgProfilePicture);
         storageReference = FirebaseStorage.getInstance().getReference();
+
         //set text view values from database
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
@@ -151,8 +150,20 @@ public class user_details_activity extends Fragment {
         loadImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Picasso.get().load(uri).into(imgProfilePicture);
-                progressBar.setVisibility(View.INVISIBLE);
+                Picasso.get().load(uri).into(imgProfilePicture, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Picasso.get().load(R.drawable.profile_picture).into(imgProfilePicture);
+                        FancyToast.makeText(context1, "Cannot load profile picture: ", FancyToast.LENGTH_SHORT, FancyToast.WARNING, false).show();
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -164,6 +175,8 @@ public class user_details_activity extends Fragment {
 
 
         //handle fab onclick
+        materialDesignFAM.setClosedOnTouchOutside(true);
+
         fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,13 +190,17 @@ public class user_details_activity extends Fragment {
                     public void onClick(View view) {
 
                         LayoutInflater layoutInflater = LayoutInflater.from(user_details_activity.this.getActivity());
+                        //create prompt view
                         final View promptView = layoutInflater.inflate(R.layout.edit_message, null);
+                        //create alert dialog and set prompt view
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                         alertDialogBuilder.setView(promptView);
+                        //define and assign text boxes
                         final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
                         final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
                         final EditText editTextcon = (EditText) promptView.findViewById(R.id.editTextconPw);
                         progress.setMessage("Updating Password...");
+                        //set alert builder buttons action
                         alertDialogBuilder
                                 .setCancelable(false)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
