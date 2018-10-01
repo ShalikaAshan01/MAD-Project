@@ -11,10 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -48,7 +46,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.Set;
 
 public class login_activity extends AppCompatActivity {
 
@@ -264,6 +261,7 @@ public class login_activity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
         progressDialog.setMessage("Signing...");
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
 
