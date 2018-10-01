@@ -201,7 +201,6 @@ public class login_activity extends AppCompatActivity {
             editTextPassword.requestFocus();
             return;
         }
-
         final ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
