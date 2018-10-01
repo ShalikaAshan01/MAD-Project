@@ -89,7 +89,7 @@ public class user_details_activity extends Fragment {
         tv_works = rootView.findViewById(R.id.tv_works);
         tv_lives = rootView.findViewById(R.id.tv_lives);
         tv_email = rootView.findViewById(R.id.tv_email);
-        tv_username = (TextView) rootView.findViewById(R.id.tv_username);
+        tv_username = rootView.findViewById(R.id.tv_username);
         imgProfilePicture = rootView.findViewById(R.id.imgProfilePicture);
         storageReference = FirebaseStorage.getInstance().getReference();
 
@@ -176,6 +176,7 @@ public class user_details_activity extends Fragment {
 
         //handle fab onclick
         materialDesignFAM.setClosedOnTouchOutside(true);
+        materialDesignFAM.setIconAnimated(false);
 
         fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,9 +197,9 @@ public class user_details_activity extends Fragment {
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                         alertDialogBuilder.setView(promptView);
                         //define and assign text boxes
-                        final EditText editText = (EditText) promptView.findViewById(R.id.editTextPw);
-                        final EditText editTextnew = (EditText) promptView.findViewById(R.id.editTextnewPw);
-                        final EditText editTextcon = (EditText) promptView.findViewById(R.id.editTextconPw);
+                        final EditText editText = promptView.findViewById(R.id.editTextPw);
+                        final EditText editTextnew = promptView.findViewById(R.id.editTextnewPw);
+                        final EditText editTextcon = promptView.findViewById(R.id.editTextconPw);
                         progress.setMessage("Updating Password...");
                         //set alert builder buttons action
                         alertDialogBuilder
@@ -275,8 +276,8 @@ public class user_details_activity extends Fragment {
                         final View promptView = layoutInflater.inflate(R.layout.edit_name_popup, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                         alertDialogBuilder.setView(promptView);
-                        final EditText editTextFirstname = (EditText) promptView.findViewById(R.id.editTextFirstname);
-                        final EditText editTextlastname = (EditText) promptView.findViewById(R.id.editTextlastname);
+                        final EditText editTextFirstname = promptView.findViewById(R.id.editTextFirstname);
+                        final EditText editTextlastname = promptView.findViewById(R.id.editTextlastname);
                         editTextFirstname.setHint(firstname);
                         editTextlastname.setHint(lastname);
                         progress.setMessage("Updating...");
@@ -327,7 +328,7 @@ public class user_details_activity extends Fragment {
                         View promptView = layoutInflater.inflate(R.layout.edit_works_popup, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                         alertDialogBuilder.setView(promptView);
-                        final EditText editTextwork = (EditText) promptView.findViewById(R.id.editTextwork);
+                        final EditText editTextwork = promptView.findViewById(R.id.editTextwork);
                         editTextwork.setHint(work);
                         alertDialogBuilder
                                 .setCancelable(false)
@@ -362,7 +363,7 @@ public class user_details_activity extends Fragment {
                         View promptView = layoutInflater.inflate(R.layout.edit_degree_popup, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                         alertDialogBuilder.setView(promptView);
-                        final EditText editTextDegree = (EditText) promptView.findViewById(R.id.editTextdegree);
+                        final EditText editTextDegree = promptView.findViewById(R.id.editTextdegree);
                         editTextDegree.setHint(degree);
                         alertDialogBuilder
                                 .setCancelable(false)
@@ -407,7 +408,7 @@ public class user_details_activity extends Fragment {
                         View promptView = layoutInflater.inflate(R.layout.edit_location_popup, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
                         alertDialogBuilder.setView(promptView);
-                        final EditText editTextLocation = (EditText) promptView.findViewById(R.id.editTextlocation);
+                        final EditText editTextLocation = promptView.findViewById(R.id.editTextlocation);
                         editTextLocation.setHint(live);
                         alertDialogBuilder
                                 .setCancelable(false)

@@ -12,4 +12,13 @@
     <color name="endcolor1">#CFDEF3</color>
     <color name="borderColor">#000000</color>
     <color name="colorAccentWhite">#EEEEEE</color>
+    <color name="fablabletext">#000000</color>
+    <color name="fablabelnormal">#ffffff</color>
+    <color name="fabLablePressed">#eceff1</color>
+    <color name="fabColorNormal">#da3c2f</color>
+    <color name="fabColorPressed">#dc4b3f</color>
+    <color name="fabColorRipple">#99d4d4d4</color>
+    <color name="fab_button_background">#000000</color>
+    <color name="fab_button_background_ripple">#78909c</color>
+    <color name="fab_button_background_pressed">#263238</color>
 </resources>

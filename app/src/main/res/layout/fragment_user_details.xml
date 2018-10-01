@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_home1">
@@ -140,8 +139,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_email" />
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/edit_floating_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="20dp"
@@ -152,14 +151,14 @@
         fab:menu_animationDelayPerItem="55"
         fab:menu_backgroundColor="@android:color/transparent"
         fab:menu_buttonSpacing="0dp"
-        fab:menu_colorNormal="#da3c2f"
-        fab:menu_colorPressed="#dc4b3f"
-        fab:menu_colorRipple="#99d4d4d4"
+        fab:menu_colorNormal="@color/fabColorNormal"
+        fab:menu_colorPressed="@color/fabColorPressed"
+        fab:menu_colorRipple="@color/fabColorRipple"
         fab:menu_fab_label="@string/editDetails"
         fab:menu_fab_size="normal"
-        fab:menu_icon="@drawable/fab_add"
-        fab:menu_labels_colorNormal="#333"
-        fab:menu_labels_colorPressed="#444"
+        fab:menu_icon="@drawable/img_answer"
+        fab:menu_labels_colorNormal="@color/fablabelnormal"
+        fab:menu_labels_colorPressed="@color/fabLablePressed"
         fab:menu_labels_colorRipple="#66efecec"
         fab:menu_labels_cornerRadius="3dp"
         fab:menu_labels_ellipsize="none"
@@ -171,7 +170,7 @@
         fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
         fab:menu_labels_showShadow="true"
         fab:menu_labels_singleLine="false"
-        fab:menu_labels_textColor="#f2f1f1"
+        fab:menu_labels_textColor="@color/fablabletext"
         fab:menu_labels_textSize="15sp"
         fab:menu_openDirection="up"
         fab:menu_shadowColor="#66aff198"
@@ -186,6 +185,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/img_user"
             app:fab_label="@string/changeusername"
+            fab:fab_colorNormal="@color/fab_button_background"
+            fab:fab_colorPressed="@color/fab_button_background_pressed"
+            fab:fab_colorRipple="@color/fab_button_background_ripple"
             fab:fab_size="mini" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_password"
@@ -193,6 +195,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/img_password"
             app:fab_label="@string/changepassword"
+            fab:fab_colorNormal="@color/fab_button_background"
+            fab:fab_colorPressed="@color/fab_button_background_pressed"
+            fab:fab_colorRipple="@color/fab_button_background_ripple"
             fab:fab_size="mini" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_degree"
@@ -200,6 +205,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/img_school"
             app:fab_label="@string/changedegree"
+            fab:fab_colorNormal="@color/fab_button_background"
+            fab:fab_colorPressed="@color/fab_button_background_pressed"
+            fab:fab_colorRipple="@color/fab_button_background_ripple"
             fab:fab_size="mini" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_word"
@@ -207,6 +215,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/img_work"
             app:fab_label="@string/changework"
+            fab:fab_colorNormal="@color/fab_button_background"
+            fab:fab_colorPressed="@color/fab_button_background_pressed"
+            fab:fab_colorRipple="@color/fab_button_background_ripple"
             fab:fab_size="mini" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_locatiom"
@@ -214,6 +225,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/img_location"
             app:fab_label="@string/changelocation"
+            fab:fab_colorNormal="@color/fab_button_background"
+            fab:fab_colorPressed="@color/fab_button_background_pressed"
+            fab:fab_colorRipple="@color/fab_button_background_ripple"
             fab:fab_size="mini" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_picture"
@@ -221,6 +235,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/img_change_picture"
             app:fab_label="@string/changepicture"
+            fab:fab_colorNormal="@color/fab_button_background"
+            fab:fab_colorPressed="@color/fab_button_background_pressed"
+            fab:fab_colorRipple="@color/fab_button_background_ripple"
             fab:fab_size="mini" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_logout"
@@ -228,6 +245,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/img_password"
             app:fab_label="@string/btn_logout"
+            fab:fab_colorNormal="@color/fab_button_background"
+            fab:fab_colorPressed="@color/fab_button_background_pressed"
+            fab:fab_colorRipple="@color/fab_button_background_ripple"
             fab:fab_size="mini" />
     </com.github.clans.fab.FloatingActionMenu>
 
