@@ -40,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.shashank.sony.fancytoastlib.FancyToast;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
@@ -141,7 +142,7 @@ public class user_details_activity extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 //                progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(getActivity().getApplicationContext(), "something went wrong", Toast.LENGTH_SHORT).show();
+                FancyToast.makeText(getActivity().getApplicationContext(), "something went wrong", FancyToast.LENGTH_SHORT,FancyToast.WARNING,false).show();
             }
         });
 
@@ -189,6 +190,10 @@ public class user_details_activity extends Fragment {
                                     public void onClick(DialogInterface dialog, int id) {
                                         final String con = editTextcon.getText().toString().trim();
                                         final String pass = editTextnew.getText().toString().trim();
+                                        final String old = editText.getText().toString().trim();
+                                        if (old.isEmpty()){
+                                            return;
+                                        }
                                         progress.show();
                                         user = FirebaseAuth.getInstance().getCurrentUser();
                                         AuthCredential authCredential = EmailAuthProvider.getCredential(email, editText.getText().toString().trim());
@@ -199,7 +204,7 @@ public class user_details_activity extends Fragment {
                                                 if (task.isSuccessful()) {
                                                     if (!(con.equalsIgnoreCase(pass) && pass.length() >= 8)) {
                                                         progress.dismiss();
-                                                        Toast.makeText(getActivity().getApplicationContext(), "Password does not meet the requirements", Toast.LENGTH_SHORT).show();
+                                                        FancyToast.makeText(getActivity().getApplicationContext(), "Password does not meet the requirements", FancyToast.LENGTH_SHORT,FancyToast.ERROR,false).show();
                                                     } else {
                                                         user.updatePassword(con).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
@@ -207,11 +212,11 @@ public class user_details_activity extends Fragment {
                                                                 //if passaword successfully changed
                                                                 if (task.isSuccessful()) {
                                                                     progress.dismiss();
-                                                                    Toast.makeText(getActivity().getApplicationContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                                                    FancyToast.makeText(getActivity().getApplicationContext(), "Password updated successfully", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                                                                     userLogout(getContext());
                                                                 } else {
                                                                     progress.dismiss();
-                                                                    Toast.makeText(getActivity().getApplicationContext(), "Cannot change password", Toast.LENGTH_SHORT).show();
+                                                                    FancyToast.makeText(getActivity().getApplicationContext(), "Cannot change password", FancyToast.LENGTH_SHORT,FancyToast.ERROR,false).show();
                                                                 }
                                                             }
                                                         });
@@ -220,7 +225,7 @@ public class user_details_activity extends Fragment {
                                                 //if credintial invalid
                                                 else {
                                                     progress.dismiss();
-                                                    Toast.makeText(getActivity().getApplicationContext(), "Invalid Password", Toast.LENGTH_SHORT).show();
+                                                    FancyToast.makeText(getActivity().getApplicationContext(), "Invalid Password", FancyToast.LENGTH_SHORT,FancyToast.ERROR,false).show();
                                                 }
                                             }
                                         });
@@ -276,7 +281,7 @@ public class user_details_activity extends Fragment {
                                         databaseReference.child(mAuth.getCurrentUser().getUid()).child("firstname").setValue(ffname);
                                         databaseReference.child(mAuth.getCurrentUser().getUid()).child("lastname").setValue(llname);
                                         progress.dismiss();
-                                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed " + ffname, Toast.LENGTH_SHORT).show();
+                                        FancyToast.makeText(getActivity().getApplicationContext(), "Successfully Changed ", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                                     }
                                 })
                                 .setNegativeButton("Cancel",
@@ -313,6 +318,7 @@ public class user_details_activity extends Fragment {
                                     public void onClick(DialogInterface dialog, int id) {
                                         databaseReference.child(mAuth.getCurrentUser().getUid()).child("work").setValue(editTextwork.getText().toString());
                                         work = editTextwork.getText().toString();
+                                        FancyToast.makeText(getActivity().getApplicationContext(), "Successfully Changed", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                                     }
                                 })
                                 .setNegativeButton("Cancel",
@@ -347,7 +353,7 @@ public class user_details_activity extends Fragment {
                                     public void onClick(DialogInterface dialog, int id) {
                                         databaseReference.child(mAuth.getCurrentUser().getUid()).child("degree").setValue(editTextDegree.getText().toString());
                                         degree = editTextDegree.getText().toString();
-                                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                        FancyToast.makeText(getActivity().getApplicationContext(), "Successfully Changed", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                                     }
                                 })
                                 .setNegativeButton("Cancel",
@@ -392,7 +398,7 @@ public class user_details_activity extends Fragment {
                                     public void onClick(DialogInterface dialog, int id) {
                                         databaseReference.child(mAuth.getCurrentUser().getUid()).child("location").setValue(editTextLocation.getText().toString());
                                         live = editTextLocation.getText().toString();
-                                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Changed", Toast.LENGTH_SHORT).show();
+                                        FancyToast.makeText(getActivity().getApplicationContext(), "Successfully Changed", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                                     }
                                 })
                                 .setNegativeButton("Cancel",
@@ -426,7 +432,7 @@ public class user_details_activity extends Fragment {
                         getActivity().finish();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-                        Toast.makeText(getActivity().getApplicationContext(), "Successfully Logged out", Toast.LENGTH_SHORT).show();
+                        FancyToast.makeText(getActivity().getApplicationContext(), "Successfully Logged out", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -451,13 +457,13 @@ public class user_details_activity extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progress.dismiss();
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully Uploaded", Toast.LENGTH_SHORT).show();
+                    FancyToast.makeText(getActivity().getApplicationContext(), "Successfully Uploaded", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     progress.dismiss();
-                    Toast.makeText(getActivity().getApplicationContext(), "Cannot Upload Profile picture", Toast.LENGTH_SHORT).show();
+                    FancyToast.makeText(getActivity().getApplicationContext(), "Cannot Upload Profile picture", FancyToast.LENGTH_SHORT,FancyToast.WARNING,false).show();
                 }
             });
         }

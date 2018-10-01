@@ -23,6 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -154,11 +155,12 @@ public class RegisterActivity extends AppCompatActivity {
                     currentUser.child("degree").setValue("");
                     currentUser.child("location").setValue("");
                     progressBar.setVisibility(View.GONE);
+                    FancyToast.makeText(RegisterActivity.this,"Account created",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                     finish();
                     startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
                 }else{
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(RegisterActivity.this,"Can't create an Account",Toast.LENGTH_SHORT).show();
+                    FancyToast.makeText(RegisterActivity.this,"Can't create an Account",FancyToast.LENGTH_SHORT,FancyToast.ERROR,false).show();
                 }
             }
         });
@@ -174,7 +176,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        FancyToast.makeText(this, "Please click BACK again to exit", FancyToast.LENGTH_SHORT,FancyToast.INFO,false).show();
 
         new Handler().postDelayed(new Runnable() {
 

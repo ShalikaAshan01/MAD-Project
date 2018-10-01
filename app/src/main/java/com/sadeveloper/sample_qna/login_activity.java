@@ -41,6 +41,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -93,7 +94,7 @@ public class login_activity extends AppCompatActivity {
             @Override
             public void onError(FacebookException error) {
                 Log.d(TAG, "facebook:onError", error);
-                Toast.makeText(login_activity.this, "FB Error", Toast.LENGTH_SHORT).show();
+                FancyToast.makeText(login_activity.this, "Facebook Error", FancyToast.LENGTH_SHORT,FancyToast.WARNING,false).show();
 
 
                 // ...
@@ -130,19 +131,19 @@ public class login_activity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             progressDialog.dismiss();
-                                            Toast.makeText(getBaseContext(),"Password Reset email send to your account",Toast.LENGTH_SHORT).show();
+                                            FancyToast.makeText(getBaseContext(),"Password Reset email send to your account",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             progressDialog.dismiss();
-                                            Toast.makeText(getBaseContext(),"Cannot Send Email",Toast.LENGTH_SHORT).show();
+                                            FancyToast.makeText(getBaseContext(),"Cannot Send Email",FancyToast.LENGTH_SHORT,FancyToast.WARNING,false).show();
 
                                         }
                                     });
                                 }
                                 else{
-                                    Toast.makeText(getBaseContext(),"Please enter valid email address",Toast.LENGTH_SHORT).show();
+                                    FancyToast.makeText(getBaseContext(),"Please enter valid email address",FancyToast.LENGTH_SHORT,FancyToast.ERROR,false).show();
 
                                 }
                             }
@@ -207,13 +208,13 @@ public class login_activity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(login_activity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
+                    FancyToast.makeText(login_activity.this, "Successfully logged in", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                     progressBar.setVisibility(View.GONE);
                     finish();
                     startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(login_activity.this, "email and password doesn't match", Toast.LENGTH_SHORT).show();
+                    FancyToast.makeText(login_activity.this, "email and password doesn't match", FancyToast.LENGTH_SHORT,FancyToast.ERROR,false).show();
                 }
             }
         });
@@ -231,7 +232,7 @@ public class login_activity extends AppCompatActivity {
             return;
         }
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        FancyToast.makeText(this, "Please click BACK again to exit", FancyToast.LENGTH_SHORT,FancyToast.INFO,false).show();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -276,13 +277,13 @@ public class login_activity extends AppCompatActivity {
                             userLoginFromFacebook(token);
                             finish();
                             startActivity(new Intent(getApplicationContext(), UserAreaActivity.class));
-                            Toast.makeText(login_activity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
+                            FancyToast.makeText(login_activity.this, "Successfully logged in", FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
                             progressDialog.dismiss();
                         } else {
                             // If sign in fails, display a message to the user.
                             progressDialog.dismiss();
-                            Toast.makeText(login_activity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            FancyToast.makeText(login_activity.this, "Authentication failed.",
+                                    FancyToast.LENGTH_SHORT,FancyToast.ERROR,false).show();
                         }
 
                     }

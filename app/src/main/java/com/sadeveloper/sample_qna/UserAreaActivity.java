@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 public class UserAreaActivity extends FragmentActivity {
     TextView textViewId, textViewUsername, textViewEmail, textViewGender;
@@ -150,7 +151,7 @@ public class UserAreaActivity extends FragmentActivity {
         else if (!doubleBackToExitPressedOnce) {
             this.doubleBackToExitPressedOnce = true;
 
-            Toast.makeText(this,"Please click BACK again to exit.", Toast.LENGTH_SHORT).show();
+            FancyToast.makeText(this,"Please click BACK again to exit.", FancyToast.LENGTH_SHORT,FancyToast.INFO,false).show();
 
             new Handler().postDelayed(new Runnable() {
 
