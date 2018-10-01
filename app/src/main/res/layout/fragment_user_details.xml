@@ -4,6 +4,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_user_details"
     android:background="@drawable/gradient_home1">
 
 
@@ -139,8 +140,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_email" />
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/edit_floating_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="20dp"

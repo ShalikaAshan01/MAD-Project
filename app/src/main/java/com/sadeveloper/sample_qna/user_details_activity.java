@@ -6,13 +6,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -173,10 +176,49 @@ public class user_details_activity extends Fragment {
             }
         });
 
-
         //handle fab onclick
         materialDesignFAM.setClosedOnTouchOutside(true);
         materialDesignFAM.setIconAnimated(false);
+
+        final Drawable originalImage = materialDesignFAM.getMenuIconView().getDrawable();
+        materialDesignFAM.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (materialDesignFAM.isOpened()) {
+                    // We will change the icon when the menu opens, here we want to change to the previous icon
+                    materialDesignFAM.close(true);
+                    materialDesignFAM.getMenuIconView().setImageDrawable(originalImage);
+                } else {
+                    // Since it is closed, let's set our new icon and then open the menu
+                    materialDesignFAM.getMenuIconView().setImageDrawable(context1.getResources().getDrawable(R.drawable.img_fab_close));
+                    materialDesignFAM.open(true);
+                }
+            }
+        });
+
+        ConstraintLayout constraintLayout = rootView.findViewById(R.id.fragment_user_details);
+        constraintLayout.performClick();
+        constraintLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (materialDesignFAM.isOpened()) {
+                    // We will change the icon when the menu opens, here we want to change to the previous icon
+                    materialDesignFAM.getMenuIconView().setImageDrawable(context1.getResources().getDrawable(R.drawable.img_fab_close));
+                } else {
+                    // Since it is closed, let's set our new icon and then open the menu
+                    materialDesignFAM.getMenuIconView().setImageDrawable(originalImage);
+                }
+                return false;
+            }
+        });
+
+//        constraintLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
+
 
         fabLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +226,6 @@ public class user_details_activity extends Fragment {
                 userLogout(context1);
             }
         });
-
         //Change user's password
         fabPassword.setOnClickListener((new Button.OnClickListener() {
                     @Override
